@@ -1,0 +1,9 @@
+{
+    "name": "Home",
+    "icon":"homeIcon",
+    "location":{
+        "type": "Point",
+        "coordinates":[53.115573, 23.140893]
+    }
+}
+

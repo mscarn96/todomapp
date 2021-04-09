@@ -1,8 +1,8 @@
-import mongoose, { Schema } from "mongoose";
+const mongoose = require("mongoose");
 
 // import geocoder from 'geocoder'
 
-const placeSchema = new Schema({
+const placeSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please name a place"],
@@ -31,6 +31,4 @@ const placeSchema = new Schema({
   },
 });
 
-const Place = mongoose.model("Place", placeSchema);
-
-export default Place;
+module.exports = mongoose.model("Place", placeSchema);
