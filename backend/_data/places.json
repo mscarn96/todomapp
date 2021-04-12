@@ -1,9 +1,39 @@
-{
+[{
     "name": "Home",
     "icon":"homeIcon",
     "location":{
         "type": "Point",
         "coordinates":[53.115573, 23.140893]
     }
-}
+},
+{
+    "name": "Office",
+    "icon":"homeIcon",
+    "location":{
+        "type": "Point",
+        "coordinates":[53.115573, 23.140893]
+    }
+},
+{
+    "name": "Shop",
+    "icon":"homeIcon",
+    "location":{
+        "type": "Point",
+        "coordinates":[53.115573, 23.140893]
+    }
+},
+{
+    "name": "Gym",
+    "icon":"homeIcon",
+    "location":{
+        "type": "Point",
+        "coordinates":[53.115573, 23.140893]
+    }
+}]
+
+
+
+
+
+
 

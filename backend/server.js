@@ -6,6 +6,7 @@ const errorHandler = require("./middleware/error");
 const connectDB = require("./config/db");
 
 const places = require("./routes/places");
+const tasks = require("./routes/tasks");
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.use("/api/v1/places", places);
+app.use("api/v1/tasks", tasks);
 
 app.use(errorHandler);
 

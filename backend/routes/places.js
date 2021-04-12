@@ -1,5 +1,5 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 
 const {
   getPlaces,
@@ -8,6 +8,10 @@ const {
   deletePlace,
   addPlace,
 } = require("../controllers/places");
+
+const tasksRouter = require("./tasks");
+
+router.use("/:placeId/tasks", tasksRouter);
 
 router.route("/").get(getPlaces).post(addPlace);
 

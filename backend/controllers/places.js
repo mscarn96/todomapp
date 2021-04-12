@@ -3,18 +3,18 @@ const ErrorResponse = require("../utils/ErrorResponse");
 const Place = require("../models/Place");
 
 exports.getPlaces = asyncHandler(async (req, res, next) => {
-  const places = await Place.find({});
-  res.status(200).json({ success: true, data: places });
+  const places = await Place.find({}).populate("tasks");
+  res.status(200).json({ success: true, count: places.length, data: places });
 });
 
 exports.getPlace = asyncHandler(async (req, res, next) => {
-  const place = await Place.findById(req.params.id);
+  const place = await Place.findById(req.params.id).populate("tasks");
 
-  console.log(place.yellow);
+  console.log(place);
 
   if (!place) {
     return next(
-      new ErrorHandler(`No place of id ${req.params.id} found!`),
+      new ErrorResponse(`No place of id ${req.params.id} found!`),
       404
     );
   }
@@ -28,11 +28,11 @@ exports.addPlace = asyncHandler(async (req, res, next) => {
 });
 
 exports.updatePlace = asyncHandler(async (req, res, next) => {
-  let place = await Place.findById(req.params.id);
+  let place = await Place.findById(req.params.id).populate("tasks");
 
   if (!place) {
     return next(
-      new ErrorHandler(`No place of id ${req.params.id} found!`),
+      new ErrorResponse(`No place of id ${req.params.id} found!`),
       404
     );
   }
@@ -46,11 +46,11 @@ exports.updatePlace = asyncHandler(async (req, res, next) => {
 });
 
 exports.deletePlace = asyncHandler(async (req, res, next) => {
-  const place = await Place.findById(req.params.id);
+  const place = await Place.findById(req.params.id).populate("tasks");
 
   if (!place) {
     return next(
-      new ErrorHandler(`No place of id ${req.params.id} found!`),
+      new ErrorResponse(`No place of id ${req.params.id} found!`),
       404
     );
   }
