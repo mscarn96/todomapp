@@ -3,14 +3,12 @@ const ErrorResponse = require("../utils/ErrorResponse");
 const Place = require("../models/Place");
 
 exports.getPlaces = asyncHandler(async (req, res, next) => {
-  const places = await Place.find({}).populate("tasks");
+  const places = await Place.find({ user: req.user.id }).populate("tasks");
   res.status(200).json({ success: true, count: places.length, data: places });
 });
 
 exports.getPlace = asyncHandler(async (req, res, next) => {
   const place = await Place.findById(req.params.id).populate("tasks");
-
-  console.log(place);
 
   if (!place) {
     return next(
@@ -22,6 +20,8 @@ exports.getPlace = asyncHandler(async (req, res, next) => {
 });
 
 exports.addPlace = asyncHandler(async (req, res, next) => {
+  req.body.user = req.user.id;
+
   const place = await Place.create(req.body);
 
   res.status(200).json({ success: true, data: place });
@@ -35,6 +35,10 @@ exports.updatePlace = asyncHandler(async (req, res, next) => {
       new ErrorResponse(`No place of id ${req.params.id} found!`),
       404
     );
+  }
+
+  if (place.user.toString() !== req.user.id) {
+    return next(new ErrorResponse(`Not authorized to update this place!`), 401);
   }
 
   place = await Place.findOneAndUpdate(req.params.id, req.body, {
@@ -54,6 +58,11 @@ exports.deletePlace = asyncHandler(async (req, res, next) => {
       404
     );
   }
+
+  if (place.user.toString() !== req.user.id) {
+    return next(new ErrorResponse(`Not authorized to delete this place!`), 401);
+  }
+
   place.remove();
 
   res.status(200).json({ success: true, data: {} });

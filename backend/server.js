@@ -2,11 +2,13 @@ const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
 const colors = require("colors");
+const cookieParser = require("cookie-parser");
 const errorHandler = require("./middleware/error");
 const connectDB = require("./config/db");
 
 const places = require("./routes/places");
 const tasks = require("./routes/tasks");
+const user = require("./routes/user");
 
 dotenv.config();
 
@@ -15,6 +17,8 @@ connectDB();
 const app = express();
 
 const router = express.Router();
+
+app.use(cookieParser());
 
 app.use(express.json());
 
@@ -25,7 +29,8 @@ if (process.env.NODE_ENV === "development") {
 }
 
 app.use("/api/v1/places", places);
-app.use("api/v1/tasks", tasks);
+app.use("/api/v1/tasks", tasks);
+app.use("/api/v1/user", user);
 
 app.use(errorHandler);
 

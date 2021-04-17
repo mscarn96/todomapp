@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 // import geocoder from 'geocoder'
 
-const placeSchema = new mongoose.Schema(
+const PlaceSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -30,6 +30,11 @@ const placeSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    user: {
+      type: mongoose.Schema.Types.ObjectID,
+      ref: "User",
+      required: true,
+    },
   },
   {
     toJSON: { virtuals: true },
@@ -37,16 +42,15 @@ const placeSchema = new mongoose.Schema(
   }
 );
 
-placeSchema.pre("remove", async function (next) {
+PlaceSchema.pre("remove", async function (next) {
   await this.model("Task").deleteMany({ place: this._id });
   next();
 });
 
-placeSchema.virtual("tasks", {
+PlaceSchema.virtual("tasks", {
   ref: "Task",
   localField: "_id",
   foreignField: "place",
-  justOne: false,
 });
 
-module.exports = mongoose.model("Place", placeSchema);
+module.exports = mongoose.model("Place", PlaceSchema);

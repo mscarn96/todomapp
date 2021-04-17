@@ -17,7 +17,7 @@ exports.getTask = asyncHandler(async (req, res, next) => {
 });
 
 exports.getTasksbyPlace = asyncHandler(async (req, res, next) => {
-  const tasks = await Task.find({ task: req.params.placeId });
+  const tasks = await Task.find({ place: req.params.placeId });
 
   return res.status(200).json({
     success: true,
@@ -60,6 +60,7 @@ exports.deleteTask = asyncHandler(async (req, res, next) => {
 
 exports.addTask = asyncHandler(async (req, res, next) => {
   req.body.place = req.params.placeId;
+  req.body.user = req.user.id;
   const task = await Task.create(req.body);
   console.log(task);
 

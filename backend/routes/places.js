@@ -9,12 +9,18 @@ const {
   addPlace,
 } = require("../controllers/places");
 
+const { protect } = require("../middleware/auth");
+
 const tasksRouter = require("./tasks");
 
 router.use("/:placeId/tasks", tasksRouter);
 
-router.route("/").get(getPlaces).post(addPlace);
+router.route("/").get(protect, getPlaces).post(protect, addPlace);
 
-router.route("/:id").get(getPlace).delete(deletePlace).put(updatePlace);
+router
+  .route("/:id")
+  .get(getPlace)
+  .delete(protect, deletePlace)
+  .put(protect, updatePlace);
 
 module.exports = router;
