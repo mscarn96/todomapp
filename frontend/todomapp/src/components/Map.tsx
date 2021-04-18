@@ -1,5 +1,5 @@
+import { Box, Center } from "@chakra-ui/layout";
 import { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
 
 interface IMap {
   mapType: google.maps.MapTypeId;
@@ -8,11 +8,6 @@ interface IMap {
 
 type GoogleLatLng = google.maps.LatLng;
 type GoogleMap = google.maps.Map;
-
-const MapContainer = styled.div`
-  width: 50vw;
-  height: 50vh;
-`;
 
 const Map = (props: IMap) => {
   const ref = useRef<HTMLDivElement>(null);
@@ -40,8 +35,8 @@ const Map = (props: IMap) => {
   };
 
   const defaultMapStart = (): void => {
-    const defaultAddress = new google.maps.LatLng(65.166013499, 13.3698147);
-    initMap(4, defaultAddress);
+    const defaultAddress = new google.maps.LatLng(53.1292051, 23.1596436);
+    initMap(8, defaultAddress);
   };
 
   const startMap = (): void => {
@@ -50,12 +45,20 @@ const Map = (props: IMap) => {
     }
   };
 
-  useEffect(startMap, [map]);
+  useEffect(startMap, [startMap]);
 
   return (
-    <div className="map-container">
-      <MapContainer ref={ref} className="map-container__map"></MapContainer>
-    </div>
+    <Center h="100vh" className="map-container">
+      <Box
+        ref={ref}
+        className="map-container__map"
+        w="95vw"
+        h="95vh"
+        border="2px"
+        borderColor="teal.800"
+        borderRadius="base"
+      ></Box>
+    </Center>
   );
 };
 
