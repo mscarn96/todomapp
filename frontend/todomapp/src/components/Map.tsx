@@ -10,13 +10,13 @@ type GoogleLatLng = google.maps.LatLng;
 type GoogleMap = google.maps.Map;
 
 const Map = (props: IMap) => {
-  const ref = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<GoogleMap>();
 
   const initMap = (zoomLevel: number, address: GoogleLatLng): void => {
-    if (ref.current) {
+    if (mapRef.current) {
       setMap(
-        new google.maps.Map(ref.current, {
+        new google.maps.Map(mapRef.current, {
           zoom: zoomLevel,
           center: address,
           mapTypeControl: props.mapTypeControl,
@@ -26,7 +26,7 @@ const Map = (props: IMap) => {
           fullscreenControl: false,
           panControl: false,
           zoomControl: true,
-          gestureHandling: "cooperative",
+          gestureHandling: "greedy",
           mapTypeId: props.mapType,
           draggableCursor: "pointer",
         })
@@ -50,7 +50,7 @@ const Map = (props: IMap) => {
   return (
     <Center h="100vh" className="map-container">
       <Box
-        ref={ref}
+        ref={mapRef}
         className="map-container__map"
         w="95vw"
         h="95vh"

@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { loadMapApi } from "./utils/GoogleMapUtils";
-import Map from "./components/Map";
 
 import { Box } from "@chakra-ui/react";
+
 import Main from "./components/Main";
+import StartMenu from "./components/StartMenu";
 
 function App() {
   const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const googleMapsScript = loadMapApi();
@@ -16,13 +18,8 @@ function App() {
   }, []);
 
   return (
-    <Box className="App" w="100%" h="100%">
-      {scriptLoaded && (
-        <>
-          <Map mapType={google.maps.MapTypeId.ROADMAP} mapTypeControl={true} />
-          <Main />
-        </>
-      )}
+    <Box className="App" w="100%" h="100%" overflow="hidden">
+      {isLoggedIn ? <Main scriptLoaded={scriptLoaded} /> : <StartMenu />}
     </Box>
   );
 }
