@@ -4,7 +4,7 @@ import { loadMapApi } from "./utils/GoogleMapUtils";
 import { Box } from "@chakra-ui/react";
 
 import Main from "./components/Main";
-import StartMenu from "./components/StartMenu";
+import StartMenu from "./components/startmenu/StartMenu";
 
 function App() {
   const [scriptLoaded, setScriptLoaded] = useState(false);

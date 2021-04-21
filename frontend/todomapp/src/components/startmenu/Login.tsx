@@ -4,8 +4,10 @@ import {
   FormErrorMessage,
   FormLabel,
 } from "@chakra-ui/form-control";
+import { useDisclosure } from "@chakra-ui/hooks";
 import { Input } from "@chakra-ui/input";
 import { Flex, Heading } from "@chakra-ui/layout";
+import axios from "axios";
 import {
   withFormik,
   FormikProps,
@@ -13,7 +15,10 @@ import {
   Form,
   Field,
   FastFieldProps,
+  FormikBag,
 } from "formik";
+import { useState } from "react";
+import ResultModal from "./ResultModal";
 
 interface FormValues {
   email: string;
@@ -25,6 +30,13 @@ const isValidEmail = (email: string) => {
   return re.test(email);
 };
 
+const submitLoginForm = async (values: FormValues) => {
+  const response = await axios.post(
+    `${process.env.REACT_APP_API_URL}/api/v1/user/login`,
+    values
+  );
+  return response;
+};
 const InnerForm = (props: FormikProps<FormValues>) => {
   const { errors, isSubmitting } = props;
   return (
@@ -74,11 +86,16 @@ const InnerForm = (props: FormikProps<FormValues>) => {
           )}
         </Field>
         <Button
+          isLoading={isSubmitting}
+          loadingText="Logging..."
           colorScheme="teal"
           size="md"
+          isFullWidth
           type="submit"
           disabled={isSubmitting}
-          d="block"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
         >
           Log In
         </Button>
@@ -90,6 +107,10 @@ const InnerForm = (props: FormikProps<FormValues>) => {
 interface MyFormProps {
   initialEmail?: string;
   initialPassword?: string;
+  onOpen: () => void;
+  setIsFormSubmmiting: React.Dispatch<React.SetStateAction<boolean>>;
+  setMsg: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setIsSuccess: React.Dispatch<React.SetStateAction<boolean | undefined>>;
 }
 
 const LoginForm = withFormik<MyFormProps, FormValues>({
@@ -112,7 +133,30 @@ const LoginForm = withFormik<MyFormProps, FormValues>({
     return errors;
   },
 
-  handleSubmit: (values) => {},
+  handleSubmit: async (
+    values,
+    formikBag: FormikBag<MyFormProps, FormValues>
+  ) => {
+    const {
+      setIsFormSubmmiting,
+      setMsg,
+      onOpen,
+      setIsSuccess,
+    } = formikBag.props;
+    setIsFormSubmmiting(true);
+    try {
+      await submitLoginForm(values);
+      setMsg(`You're now logged in!`);
+      setIsSuccess(true);
+      onOpen();
+    } catch (err) {
+      setMsg(err.response.data.error);
+      setIsSuccess(false);
+      onOpen();
+    }
+    setIsFormSubmmiting(false);
+    formikBag.setSubmitting(false);
+  },
 })(InnerForm);
 
 interface ILogin {
@@ -120,19 +164,47 @@ interface ILogin {
 }
 
 const Login = (props: ILogin) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [msg, setMsg] = useState<string>();
+
+  const [isSuccess, setIsSuccess] = useState<boolean>();
+
+  //additional state to block signup button while login try
+  const [isFormSubmitting, setIsFormSubmmiting] = useState(false);
+
   return (
-    <Flex
-      direction="column"
-      flexDir="column"
-      align="center"
-      justify="space-around"
-      w="100%"
-    >
-      <LoginForm />
-      <Button w="50%" onClick={() => props.setIsNewUser(true)}>
-        New User? Sign up
-      </Button>
-    </Flex>
+    <>
+      <Flex
+        direction="column"
+        flexDir="column"
+        align="center"
+        justify="space-around"
+        w="100%"
+      >
+        <LoginForm
+          onOpen={onOpen}
+          setIsFormSubmmiting={setIsFormSubmmiting}
+          setMsg={setMsg}
+          setIsSuccess={setIsSuccess}
+        />
+        <Button
+          variant="outline"
+          colorScheme="teal"
+          size="md"
+          onClick={() => props.setIsNewUser(true)}
+          disabled={isFormSubmitting}
+        >
+          New User? Sign up
+        </Button>
+      </Flex>
+      <ResultModal
+        isOpen={isOpen}
+        isSuccess={Boolean(isSuccess)}
+        onClose={onClose}
+        msg={msg ? msg : ``}
+      />
+    </>
   );
 };
 

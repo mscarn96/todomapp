@@ -4,6 +4,7 @@ import {
   FormErrorMessage,
   FormLabel,
 } from "@chakra-ui/form-control";
+import { useDisclosure } from "@chakra-ui/hooks";
 import { Input } from "@chakra-ui/input";
 import { Flex, Heading } from "@chakra-ui/layout";
 import axios from "axios";
@@ -14,7 +15,11 @@ import {
   Form,
   Field,
   FastFieldProps,
+  FormikBag,
 } from "formik";
+
+import { useState } from "react";
+import ResultModal from "./ResultModal";
 
 interface FormValues {
   name: string;
@@ -26,6 +31,14 @@ interface FormValues {
 const isValidEmail = (email: string) => {
   var re = /\S+@\S+\.\S+/;
   return re.test(email);
+};
+
+const submitRegisterForm = async (values: FormValues) => {
+  const resPromise = await axios.post(
+    `${process.env.REACT_APP_API_URL}/api/v1/user/register`,
+    values
+  );
+  return resPromise;
 };
 
 const InnerForm = (props: FormikProps<FormValues>) => {
@@ -108,13 +121,18 @@ const InnerForm = (props: FormikProps<FormValues>) => {
           )}
         </Field>
         <Button
+          isLoading={isSubmitting}
+          loadingText="Logging..."
           colorScheme="teal"
           size="md"
+          isFullWidth
           type="submit"
           disabled={isSubmitting}
-          d="block"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
         >
-          Log In
+          Register
         </Button>
       </Flex>
     </Form>
@@ -125,6 +143,10 @@ interface MyFormProps {
   initialName?: string;
   initialEmail?: string;
   initialPassword?: string;
+  onOpen: () => void;
+  setIsFormSubmmiting: React.Dispatch<React.SetStateAction<boolean>>;
+  setMsg: React.Dispatch<React.SetStateAction<string | undefined>>;
+  setIsSuccess: React.Dispatch<React.SetStateAction<boolean | undefined>>;
 }
 
 const RegisterForm = withFormik<MyFormProps, FormValues>({
@@ -155,8 +177,30 @@ const RegisterForm = withFormik<MyFormProps, FormValues>({
     return errors;
   },
 
-  handleSubmit: (values) => {
-    // TODO : think about where setIsLoggedIn()
+  handleSubmit: async (
+    values,
+    formikBag: FormikBag<MyFormProps, FormValues>
+  ) => {
+    const {
+      setIsFormSubmmiting,
+      setMsg,
+      onOpen,
+      setIsSuccess,
+    } = formikBag.props;
+    setIsFormSubmmiting(true);
+    try {
+      await submitRegisterForm(values);
+      setMsg(`Account successfully created!`);
+      setIsSuccess(true);
+      onOpen();
+    } catch (err) {
+      setMsg(err.response.data.error);
+      setIsSuccess(false);
+      onOpen();
+    }
+    onOpen();
+    setIsFormSubmmiting(false);
+    formikBag.setSubmitting(false);
   },
 })(InnerForm);
 
@@ -165,19 +209,47 @@ interface IRegister {
 }
 
 const Register = (props: IRegister) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [msg, setMsg] = useState<string>();
+
+  const [isSuccess, setIsSuccess] = useState<boolean>();
+
+  //additional state to block signup button while login try
+  const [isFormSubmitting, setIsFormSubmmiting] = useState(false);
+
   return (
-    <Flex
-      direction="column"
-      flexDir="column"
-      align="center"
-      justify="space-around"
-      w="100%"
-    >
-      <RegisterForm />
-      <Button w="50%" onClick={() => props.setIsNewUser(false)}>
-        Already an user? Log in
-      </Button>
-    </Flex>
+    <>
+      <Flex
+        direction="column"
+        flexDir="column"
+        align="center"
+        justify="space-around"
+        w="100%"
+      >
+        <RegisterForm
+          onOpen={onOpen}
+          setMsg={setMsg}
+          setIsFormSubmmiting={setIsFormSubmmiting}
+          setIsSuccess={setIsSuccess}
+        />
+        <Button
+          variant="outline"
+          colorScheme="teal"
+          size="md"
+          onClick={() => props.setIsNewUser(false)}
+          disabled={isFormSubmitting}
+        >
+          Already an user? Log in
+        </Button>
+      </Flex>
+      <ResultModal
+        isSuccess={Boolean(isSuccess)}
+        isOpen={isOpen}
+        onClose={onClose}
+        msg={msg ? msg : ``}
+      />
+    </>
   );
 };
 
