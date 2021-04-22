@@ -7,7 +7,6 @@ import {
 import { useDisclosure } from "@chakra-ui/hooks";
 import { Input } from "@chakra-ui/input";
 import { Flex, Heading } from "@chakra-ui/layout";
-import axios from "axios";
 import {
   withFormik,
   FormikProps,
@@ -17,10 +16,13 @@ import {
   FastFieldProps,
   FormikBag,
 } from "formik";
-import { useState } from "react";
+import React, { useState } from "react";
+import { submitLoginForm } from "../../utils/apiCalls";
+import { Action } from "../context/actions";
+import { useContextDispatch } from "../context/Store";
 import ResultModal from "./ResultModal";
 
-interface FormValues {
+export interface LoginFormValues {
   email: string;
   password: string;
 }
@@ -30,14 +32,7 @@ const isValidEmail = (email: string) => {
   return re.test(email);
 };
 
-const submitLoginForm = async (values: FormValues) => {
-  const response = await axios.post(
-    `${process.env.REACT_APP_API_URL}/api/v1/user/login`,
-    values
-  );
-  return response;
-};
-const InnerForm = (props: FormikProps<FormValues>) => {
+const InnerForm = (props: FormikProps<LoginFormValues>) => {
   const { errors, isSubmitting } = props;
   return (
     <Form>
@@ -111,18 +106,19 @@ interface MyFormProps {
   setIsFormSubmmiting: React.Dispatch<React.SetStateAction<boolean>>;
   setMsg: React.Dispatch<React.SetStateAction<string | undefined>>;
   setIsSuccess: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  dispatch: React.Dispatch<Action>;
 }
 
-const LoginForm = withFormik<MyFormProps, FormValues>({
-  mapPropsToValues: (props: MyFormProps): FormValues => {
+const LoginForm = withFormik<MyFormProps, LoginFormValues>({
+  mapPropsToValues: (props: MyFormProps): LoginFormValues => {
     return {
       email: props.initialEmail || "",
       password: props.initialPassword || "",
     };
   },
 
-  validate: (values: FormValues) => {
-    let errors: FormikErrors<FormValues> = {};
+  validate: (values: LoginFormValues) => {
+    let errors: FormikErrors<LoginFormValues> = {};
     if (!values.email) {
       errors.email = "E-mail is required";
     } else if (!isValidEmail(values.email)) {
@@ -135,17 +131,18 @@ const LoginForm = withFormik<MyFormProps, FormValues>({
 
   handleSubmit: async (
     values,
-    formikBag: FormikBag<MyFormProps, FormValues>
+    formikBag: FormikBag<MyFormProps, LoginFormValues>
   ) => {
     const {
       setIsFormSubmmiting,
       setMsg,
       onOpen,
       setIsSuccess,
+      dispatch,
     } = formikBag.props;
     setIsFormSubmmiting(true);
     try {
-      await submitLoginForm(values);
+      await submitLoginForm(values, dispatch);
       setMsg(`You're now logged in!`);
       setIsSuccess(true);
       onOpen();
@@ -161,10 +158,20 @@ const LoginForm = withFormik<MyFormProps, FormValues>({
 
 interface ILogin {
   setIsNewUser: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Login = (props: ILogin) => {
+  const dispatch = useContextDispatch();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const closeResultModal = () => {
+    if (isSuccess) {
+      props.setIsLoggedIn(true);
+    }
+    onClose();
+  };
 
   const [msg, setMsg] = useState<string>();
 
@@ -187,6 +194,7 @@ const Login = (props: ILogin) => {
           setIsFormSubmmiting={setIsFormSubmmiting}
           setMsg={setMsg}
           setIsSuccess={setIsSuccess}
+          dispatch={dispatch}
         />
         <Button
           variant="outline"
@@ -201,7 +209,7 @@ const Login = (props: ILogin) => {
       <ResultModal
         isOpen={isOpen}
         isSuccess={Boolean(isSuccess)}
-        onClose={onClose}
+        onClose={closeResultModal}
         msg={msg ? msg : ``}
       />
     </>

@@ -33,7 +33,7 @@ const ResultModal = (props: IResultModal) => {
 
         <ModalFooter>
           <Button colorScheme="teal" mr={3} onClick={onClose}>
-            Close
+            {isSuccess ? "Let's go!" : "Close"}
           </Button>
         </ModalFooter>
       </ModalContent>

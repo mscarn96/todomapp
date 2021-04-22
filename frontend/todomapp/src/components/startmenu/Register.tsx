@@ -7,7 +7,6 @@ import {
 import { useDisclosure } from "@chakra-ui/hooks";
 import { Input } from "@chakra-ui/input";
 import { Flex, Heading } from "@chakra-ui/layout";
-import axios from "axios";
 import {
   withFormik,
   FormikProps,
@@ -20,8 +19,11 @@ import {
 
 import { useState } from "react";
 import ResultModal from "./ResultModal";
+import { submitRegisterForm } from "../../utils/apiCalls";
+import { useContextDispatch } from "../context/Store";
+import { Action } from "../context/actions";
 
-interface FormValues {
+export interface RegisterFormValues {
   name: string;
   email: string;
   password: string;
@@ -33,15 +35,7 @@ const isValidEmail = (email: string) => {
   return re.test(email);
 };
 
-const submitRegisterForm = async (values: FormValues) => {
-  const resPromise = await axios.post(
-    `${process.env.REACT_APP_API_URL}/api/v1/user/register`,
-    values
-  );
-  return resPromise;
-};
-
-const InnerForm = (props: FormikProps<FormValues>) => {
+const InnerForm = (props: FormikProps<RegisterFormValues>) => {
   const { errors, isSubmitting } = props;
   return (
     <Form>
@@ -147,10 +141,11 @@ interface MyFormProps {
   setIsFormSubmmiting: React.Dispatch<React.SetStateAction<boolean>>;
   setMsg: React.Dispatch<React.SetStateAction<string | undefined>>;
   setIsSuccess: React.Dispatch<React.SetStateAction<boolean | undefined>>;
+  dispatch: React.Dispatch<Action>;
 }
 
-const RegisterForm = withFormik<MyFormProps, FormValues>({
-  mapPropsToValues: (props: MyFormProps): FormValues => {
+const RegisterForm = withFormik<MyFormProps, RegisterFormValues>({
+  mapPropsToValues: (props: MyFormProps): RegisterFormValues => {
     return {
       email: props.initialEmail || "",
       password: props.initialPassword || "",
@@ -159,8 +154,8 @@ const RegisterForm = withFormik<MyFormProps, FormValues>({
     };
   },
 
-  validate: (values: FormValues) => {
-    let errors: FormikErrors<FormValues> = {};
+  validate: (values: RegisterFormValues) => {
+    let errors: FormikErrors<RegisterFormValues> = {};
     if (!values.name) {
       errors.name = "Name is required";
     } else if (!values.email) {
@@ -179,17 +174,18 @@ const RegisterForm = withFormik<MyFormProps, FormValues>({
 
   handleSubmit: async (
     values,
-    formikBag: FormikBag<MyFormProps, FormValues>
+    formikBag: FormikBag<MyFormProps, RegisterFormValues>
   ) => {
     const {
       setIsFormSubmmiting,
       setMsg,
       onOpen,
       setIsSuccess,
+      dispatch,
     } = formikBag.props;
     setIsFormSubmmiting(true);
     try {
-      await submitRegisterForm(values);
+      await submitRegisterForm(values, dispatch);
       setMsg(`Account successfully created!`);
       setIsSuccess(true);
       onOpen();
@@ -206,9 +202,19 @@ const RegisterForm = withFormik<MyFormProps, FormValues>({
 
 interface IRegister {
   setIsNewUser: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Register = (props: IRegister) => {
+  const dispatch = useContextDispatch();
+
+  const closeResultModal = () => {
+    if (isSuccess) {
+      props.setIsLoggedIn(true);
+    }
+    onClose();
+  };
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [msg, setMsg] = useState<string>();
@@ -232,6 +238,7 @@ const Register = (props: IRegister) => {
           setMsg={setMsg}
           setIsFormSubmmiting={setIsFormSubmmiting}
           setIsSuccess={setIsSuccess}
+          dispatch={dispatch}
         />
         <Button
           variant="outline"
@@ -246,7 +253,7 @@ const Register = (props: IRegister) => {
       <ResultModal
         isSuccess={Boolean(isSuccess)}
         isOpen={isOpen}
-        onClose={onClose}
+        onClose={closeResultModal}
         msg={msg ? msg : ``}
       />
     </>

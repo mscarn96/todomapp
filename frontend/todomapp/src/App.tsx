@@ -19,7 +19,11 @@ function App() {
 
   return (
     <Box className="App" w="100%" h="100%" overflow="hidden">
-      {isLoggedIn ? <Main scriptLoaded={scriptLoaded} /> : <StartMenu />}
+      {isLoggedIn ? (
+        <Main scriptLoaded={scriptLoaded} />
+      ) : (
+        <StartMenu setIsLoggedIn={setIsLoggedIn} />
+      )}
     </Box>
   );
 }
