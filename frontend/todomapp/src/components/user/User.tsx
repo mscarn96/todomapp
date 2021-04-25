@@ -14,6 +14,7 @@ import ChangeName from "./ChangeName";
 import ChangePassword from "./ChangePassword";
 import DeletePlaces from "./DeletePlaces";
 import DeleteTasks from "./DeleteTasks";
+import Logout from "./Logout";
 
 interface Props {}
 
@@ -24,6 +25,7 @@ const User = (props: Props) => {
   const [isChangePasswordVisible, setChangePasswordVisible] = useState(false);
   const [isDeleteTasksVisible, setDeleteTasksVisible] = useState(false);
   const [isDeletePlacesVisible, setDeletePlacesVisible] = useState(false);
+  const [isLogoutVisible, setLogoutVisible] = useState(false);
 
   return (
     <>
@@ -64,7 +66,12 @@ const User = (props: Props) => {
               Delete all places and tasks
             </MenuItem>
             <MenuDivider />
-            <MenuItem as="b" color="teal">
+            <MenuItem
+              as="b"
+              cursor="pointer"
+              color="teal"
+              onClick={() => setLogoutVisible(true)}
+            >
               Log out
             </MenuItem>
           </MenuList>
@@ -86,6 +93,7 @@ const User = (props: Props) => {
         isVisible={isDeletePlacesVisible}
         setVisible={setDeletePlacesVisible}
       />
+      <Logout isVisible={isLogoutVisible} setVisible={setLogoutVisible} />
     </>
   );
 };

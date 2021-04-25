@@ -1,9 +1,40 @@
 import axios from "axios";
-import { Action, loginUser, updateUser } from "../context/actions";
+import {
+  Action,
+  loginUser,
+  logoutUser,
+  updateData,
+  updateUser,
+} from "../context/actions";
 import { LoginFormValues } from "../components/startmenu/Login";
 import { RegisterFormValues } from "../components/startmenu/Register";
 import React from "react";
 import { CookieSetOptions } from "universal-cookie";
+
+export const getMe = async (
+  dispatch: React.Dispatch<Action>,
+  token: string
+) => {
+  const config = {
+    headers: { Authorization: `bearer ${token}` },
+  };
+
+  const userResponse = await axios.get(
+    `${process.env.REACT_APP_API_URL}/api/v1/user/getme`,
+    config
+  );
+
+  if (userResponse.status === 200) {
+    const { data } = userResponse.data;
+    const user: User = {
+      _id: data.id,
+      name: data.name,
+      email: data.email,
+    };
+
+    dispatch(updateUser(user));
+  }
+};
 
 export const submitLoginForm = async (
   values: LoginFormValues,
@@ -46,6 +77,8 @@ export const submitLoginForm = async (
     }
   }
 };
+
+// todo setcookies when register
 
 export const submitRegisterForm = async (
   values: RegisterFormValues,
@@ -145,7 +178,11 @@ export const submitDeletePlacesAndTasks = async (
     config
   );
   await axios.delete(`${process.env.REACT_APP_API_URL}/api/v1/places`, config);
+
+  dispatch(updateData([], []));
 };
+
+// ?? may needed testing later
 
 export const submitDeleteTasks = async (
   dispatch: React.Dispatch<Action>,
@@ -159,4 +196,22 @@ export const submitDeleteTasks = async (
     `${process.env.REACT_APP_API_URL}/api/v1/user/tasks`,
     config
   );
+
+  const places = await axios.get(
+    `${process.env.REACT_APP_API_URL}/api/v1/places`,
+    config
+  );
+
+  dispatch(updateData([], places.data.data));
+};
+
+// ?? may needed testing later
+
+export const logout = async (
+  dispatch: React.Dispatch<Action>,
+  removeCookies: (name: string, options?: CookieSetOptions | undefined) => void
+) => {
+  await axios.get(`${process.env.REACT_APP_API_URL}/api/v1/user/logout`);
+  removeCookies("jwt");
+  dispatch(logoutUser());
 };
