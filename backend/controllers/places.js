@@ -67,3 +67,9 @@ exports.deletePlace = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({ success: true, data: {} });
 });
+
+exports.deleteAllPlaces = asyncHandler(async (req, res, next) => {
+  await Place.deleteMany({ user: req.user.id });
+
+  res.status(200).json({ success: true, data: {} });
+});

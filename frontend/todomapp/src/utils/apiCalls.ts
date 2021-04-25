@@ -125,11 +125,38 @@ export const submitchangePassword = async (
   const config = {
     headers: { Authorization: `bearer ${token}` },
   };
-  //todo password form validation, create log out, delete all tasks/places (possibly backend work)
 
   await axios.put(
     `${process.env.REACT_APP_API_URL}/api/v1/user/updatepassword`,
     { currentPassword, newPassword },
+    config
+  );
+};
+
+export const submitDeletePlacesAndTasks = async (
+  dispatch: React.Dispatch<Action>,
+  token: string
+) => {
+  const config = {
+    headers: { Authorization: `bearer ${token}` },
+  };
+  await axios.delete(
+    `${process.env.REACT_APP_API_URL}/api/v1/user/tasks`,
+    config
+  );
+  await axios.delete(`${process.env.REACT_APP_API_URL}/api/v1/places`, config);
+};
+
+export const submitDeleteTasks = async (
+  dispatch: React.Dispatch<Action>,
+  token: string
+) => {
+  const config = {
+    headers: { Authorization: `bearer ${token}` },
+  };
+
+  await axios.delete(
+    `${process.env.REACT_APP_API_URL}/api/v1/user/tasks`,
     config
   );
 };

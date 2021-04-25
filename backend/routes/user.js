@@ -1,4 +1,5 @@
 const express = require("express");
+const { deleteAllTasks } = require("../controllers/tasks");
 
 const {
   register,
@@ -34,6 +35,9 @@ router.route("/getresetpassword/:resettoken").get(getResetPassword);
 
 router.route("/resetpassword/:resettoken").put(resetPassword);
 
-router.route("/tasks").get(protect, getAllUserTasks);
+router
+  .route("/tasks")
+  .get(protect, getAllUserTasks)
+  .delete(protect, deleteAllTasks);
 
 module.exports = router;

@@ -7,6 +7,7 @@ const {
   updatePlace,
   deletePlace,
   addPlace,
+  deleteAllPlaces,
 } = require("../controllers/places");
 
 const { protect } = require("../middleware/auth");
@@ -15,7 +16,11 @@ const tasksRouter = require("./tasks");
 
 router.use("/:placeId/tasks", tasksRouter);
 
-router.route("/").get(protect, getPlaces).post(protect, addPlace);
+router
+  .route("/")
+  .get(protect, getPlaces)
+  .post(protect, addPlace)
+  .delete(protect, deleteAllPlaces);
 
 router
   .route("/:id")

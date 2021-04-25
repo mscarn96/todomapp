@@ -45,7 +45,7 @@ interface ChangePassFormValues {
 const InnerForm = (
   props: FormikProps<ChangePassFormValues> & { closeModal: () => void }
 ) => {
-  const { errors, isSubmitting, closeModal } = props;
+  const { errors, closeModal, values } = props;
 
   return (
     <Form>
@@ -109,7 +109,12 @@ const InnerForm = (
           <Button
             colorScheme="teal"
             mr={3}
-            disabled={isSubmitting}
+            disabled={Boolean(
+              values.currentPassword === "" ||
+                errors.currentPassword ||
+                errors.newPassword ||
+                errors.repeatedPassword
+            )}
             type="submit"
           >
             Save

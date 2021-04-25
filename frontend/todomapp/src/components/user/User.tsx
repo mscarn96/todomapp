@@ -12,6 +12,8 @@ import { useState } from "react";
 import { useContextState } from "../../context/Store";
 import ChangeName from "./ChangeName";
 import ChangePassword from "./ChangePassword";
+import DeletePlaces from "./DeletePlaces";
+import DeleteTasks from "./DeleteTasks";
 
 interface Props {}
 
@@ -20,6 +22,8 @@ const User = (props: Props) => {
 
   const [isChangeNameVisible, setChangeNameVisible] = useState(false);
   const [isChangePasswordVisible, setChangePasswordVisible] = useState(false);
+  const [isDeleteTasksVisible, setDeleteTasksVisible] = useState(false);
+  const [isDeletePlacesVisible, setDeletePlacesVisible] = useState(false);
 
   return (
     <>
@@ -53,8 +57,12 @@ const User = (props: Props) => {
               Change password
             </MenuItem>
             <MenuDivider />
-            <MenuItem>Delete all tasks</MenuItem>
-            <MenuItem>Delete all places and tasks</MenuItem>
+            <MenuItem onClick={() => setDeleteTasksVisible(true)}>
+              Delete all tasks
+            </MenuItem>
+            <MenuItem onClick={() => setDeletePlacesVisible(true)}>
+              Delete all places and tasks
+            </MenuItem>
             <MenuDivider />
             <MenuItem as="b" color="teal">
               Log out
@@ -69,6 +77,14 @@ const User = (props: Props) => {
       <ChangePassword
         isVisible={isChangePasswordVisible}
         setVisible={setChangePasswordVisible}
+      />
+      <DeleteTasks
+        isVisible={isDeleteTasksVisible}
+        setVisible={setDeleteTasksVisible}
+      />
+      <DeletePlaces
+        isVisible={isDeletePlacesVisible}
+        setVisible={setDeletePlacesVisible}
       />
     </>
   );

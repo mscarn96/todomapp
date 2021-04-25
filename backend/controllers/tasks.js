@@ -66,3 +66,9 @@ exports.addTask = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({ success: true, data: task });
 });
+
+exports.deleteAllTasks = asyncHandler(async (req, res, next) => {
+  await Task.deleteMany({ user: req.user.id });
+
+  res.status(200).json({ success: true, data: {} });
+});
