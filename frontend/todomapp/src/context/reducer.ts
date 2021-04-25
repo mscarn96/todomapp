@@ -17,6 +17,11 @@ const reducer = (state: AppState, action: Action): AppState => {
         places: action.data?.places,
         tasks: action.data?.tasks,
       };
+    case ActionTypes.UPDATE_USER:
+      return {
+        ...state,
+        user: action.user,
+      };
   }
 };
 

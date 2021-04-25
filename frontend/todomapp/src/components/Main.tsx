@@ -1,6 +1,7 @@
 import Loader from "./Loader";
 import Map from "./Map";
-import Menu from "./Menu";
+import MainMenu from "./MainMenu";
+import User from "./user/User";
 
 interface IMain {
   scriptLoaded: boolean;
@@ -12,7 +13,8 @@ const Main = (props: IMain) => {
       {props.scriptLoaded ? (
         <>
           <Map mapType={google.maps.MapTypeId.ROADMAP} mapTypeControl={true} />
-          <Menu />
+          <MainMenu />
+          <User />
         </>
       ) : (
         <Loader />

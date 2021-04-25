@@ -20,6 +20,9 @@ const Map = (props: IMap) => {
           zoom: zoomLevel,
           center: address,
           mapTypeControl: props.mapTypeControl,
+          mapTypeControlOptions: {
+            style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+          },
           streetViewControl: false,
           rotateControl: false,
           scaleControl: true,
@@ -46,6 +49,22 @@ const Map = (props: IMap) => {
   };
 
   useEffect(startMap, [startMap]);
+
+  const showPoint = (e: google.maps.MapMouseEvent) => {
+    console.log(`lat ${e.latLng?.lat()}`);
+    console.log(`lng ${e.latLng?.lng()}`);
+  };
+
+  useEffect(() => {
+    let listener: google.maps.MapsEventListener;
+    if (map) {
+      listener = map.addListener("click", showPoint);
+    }
+
+    return () => {
+      google.maps.event.removeListener(listener);
+    };
+  }, [map]);
 
   return (
     <Center h="100vh" className="map-container">

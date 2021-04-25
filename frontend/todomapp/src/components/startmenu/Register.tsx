@@ -20,8 +20,8 @@ import {
 import { useState } from "react";
 import ResultModal from "./ResultModal";
 import { submitRegisterForm } from "../../utils/apiCalls";
-import { useContextDispatch } from "../context/Store";
-import { Action } from "../context/actions";
+import { useContextDispatch } from "../../context/Store";
+import { Action } from "../../context/actions";
 
 export interface RegisterFormValues {
   name: string;

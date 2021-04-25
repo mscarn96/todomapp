@@ -18,9 +18,11 @@ import {
 } from "formik";
 import React, { useState } from "react";
 import { submitLoginForm } from "../../utils/apiCalls";
-import { Action } from "../context/actions";
-import { useContextDispatch } from "../context/Store";
+import { Action } from "../../context/actions";
+import { useContextDispatch } from "../../context/Store";
 import ResultModal from "./ResultModal";
+import { useCookies } from "react-cookie";
+import { CookieSetOptions } from "universal-cookie";
 
 export interface LoginFormValues {
   email: string;
@@ -107,6 +109,11 @@ interface MyFormProps {
   setMsg: React.Dispatch<React.SetStateAction<string | undefined>>;
   setIsSuccess: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   dispatch: React.Dispatch<Action>;
+  setCookie: (
+    name: string,
+    value: any,
+    options?: CookieSetOptions | undefined
+  ) => void;
 }
 
 const LoginForm = withFormik<MyFormProps, LoginFormValues>({
@@ -139,10 +146,11 @@ const LoginForm = withFormik<MyFormProps, LoginFormValues>({
       onOpen,
       setIsSuccess,
       dispatch,
+      setCookie,
     } = formikBag.props;
     setIsFormSubmmiting(true);
     try {
-      await submitLoginForm(values, dispatch);
+      await submitLoginForm(values, dispatch, setCookie);
       setMsg(`You're now logged in!`);
       setIsSuccess(true);
       onOpen();
@@ -166,19 +174,22 @@ const Login = (props: ILogin) => {
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const closeResultModal = () => {
-    if (isSuccess) {
-      props.setIsLoggedIn(true);
-    }
-    onClose();
-  };
-
   const [msg, setMsg] = useState<string>();
 
   const [isSuccess, setIsSuccess] = useState<boolean>();
 
   //additional state to block signup button while login try
   const [isFormSubmitting, setIsFormSubmmiting] = useState(false);
+
+  //only cookie setter needed here
+  const setCookie = useCookies()[1];
+
+  const closeResultModal = () => {
+    if (isSuccess) {
+      props.setIsLoggedIn(true);
+    }
+    onClose();
+  };
 
   return (
     <>
@@ -195,6 +206,7 @@ const Login = (props: ILogin) => {
           setMsg={setMsg}
           setIsSuccess={setIsSuccess}
           dispatch={dispatch}
+          setCookie={setCookie}
         />
         <Button
           variant="outline"

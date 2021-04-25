@@ -15,7 +15,7 @@ import {
 
 interface IMain {}
 
-const Menu = (props: IMain) => {
+const MainMenu = (props: IMain) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -69,4 +69,4 @@ const Menu = (props: IMain) => {
   );
 };
 
-export default Menu;
+export default MainMenu;

@@ -2,6 +2,7 @@ export enum ActionTypes {
   LOGIN_USER = "LOGIN_USER",
   LOGOUT_USER = "LOGOUT_USER",
   UPDATE_DATA = "UPDATE_DATA",
+  UPDATE_USER = "UPDATE_USER",
 }
 
 interface AppData {
@@ -39,5 +40,12 @@ export const updateData = (
       tasks,
       places,
     },
+  };
+};
+
+export const updateUser = (user: User): Action => {
+  return {
+    type: ActionTypes.UPDATE_USER,
+    user,
   };
 };

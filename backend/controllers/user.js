@@ -142,6 +142,11 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 });
 
 exports.updateName = asyncHandler(async (req, res, next) => {
+  console.log(req.headers);
+  if (req.body.name.length > 12)
+    return next(
+      new ErrorResponse(`Name can't be longer than 12 characters!`, 400)
+    );
   const user = await User.findByIdAndUpdate(req.user.id, {
     name: req.body.name,
   });
