@@ -1,5 +1,7 @@
 import { Box, Center } from "@chakra-ui/layout";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+// import geocodeLatLng from "../utils/geocoder";
+import Place from "./Place";
 
 interface IMap {
   mapType: google.maps.MapTypeId;
@@ -11,7 +13,16 @@ type GoogleMap = google.maps.Map;
 
 const Map = (props: IMap) => {
   const mapRef = useRef<HTMLDivElement>(null);
+
   const [map, setMap] = useState<GoogleMap>();
+
+  const [selectedMarker, setSelectedMarker] = useState<google.maps.Marker>();
+
+  const [isPlaceInfoVisible, setPlaceInfoVisible] = useState(false);
+
+  const [selectedAddress, setSelectedAddress] = useState<string>();
+
+  // const geocoder = useCallback(() => new google.maps.Geocoder(), []);
 
   const initMap = (zoomLevel: number, address: GoogleLatLng): void => {
     if (mapRef.current) {
@@ -48,23 +59,48 @@ const Map = (props: IMap) => {
     }
   };
 
+  const addMarker = useCallback(
+    (e: google.maps.MapMouseEvent, map: google.maps.Map) => {
+      const oldMarker = selectedMarker;
+
+      const newMarker = new google.maps.Marker({
+        position: e.latLng,
+        icon: "https://api.iconify.design/noto:cross-mark.svg?height=28",
+        draggable: true,
+        animation: google.maps.Animation.DROP,
+        map: map,
+      });
+      setPlaceInfoVisible(true);
+      setSelectedMarker(newMarker);
+      oldMarker?.setMap(null);
+      setSelectedAddress("ydadudadahdaj");
+      console.log(newMarker.getPosition()?.toString());
+      // geocodeLatLng(geocoder(), newMarker?.getPosition(), setSelectedAddress);
+    },
+    [selectedMarker]
+  );
+
   useEffect(startMap, [startMap]);
 
-  const showPoint = (e: google.maps.MapMouseEvent) => {
-    console.log(`lat ${e.latLng?.lat()}`);
-    console.log(`lng ${e.latLng?.lng()}`);
-  };
-
   useEffect(() => {
-    let listener: google.maps.MapsEventListener;
+    let clickListener: google.maps.MapsEventListener;
+    let dragListener: google.maps.MapsEventListener;
     if (map) {
-      listener = map.addListener("click", showPoint);
+      clickListener = google.maps.event.addListener(
+        map,
+        "click",
+        (event: google.maps.MapMouseEvent) => addMarker(event, map)
+      );
+      selectedMarker?.addListener("dragend", () =>
+        console.log(`position: ${selectedMarker?.getPosition()}`)
+      );
     }
 
     return () => {
-      google.maps.event.removeListener(listener);
+      google.maps.event.removeListener(clickListener);
+      google.maps.event.removeListener(dragListener);
     };
-  }, [map]);
+  }, [map, addMarker, selectedMarker]);
 
   return (
     <Center h="100vh" className="map-container">
@@ -77,6 +113,12 @@ const Map = (props: IMap) => {
         borderColor="teal.800"
         borderRadius="base"
       ></Box>
+      <Place
+        isVisible={isPlaceInfoVisible}
+        setVisible={setPlaceInfoVisible}
+        placeName={selectedAddress ? selectedAddress : ""}
+        map={map}
+      />
     </Center>
   );
 };

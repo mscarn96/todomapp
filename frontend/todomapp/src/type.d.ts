@@ -5,13 +5,13 @@ interface User {
 }
 
 interface Place {
-  _id: string;
-  name: string;
-  icon: string;
   location: {
     coordinates: [number, number];
   };
-  user: User;
+  _id: string;
+  name: string;
+  icon: string;
+  user: string;
   createdAt: Date;
 }
 

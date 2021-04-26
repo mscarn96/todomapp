@@ -215,3 +215,20 @@ export const logout = async (
   removeCookies("jwt");
   dispatch(logoutUser());
 };
+
+export const getAllData = async (
+  dispatch: React.Dispatch<Action>,
+  token: string
+) => {
+  const config = {
+    headers: { Authorization: `bearer ${token}` },
+  };
+
+  const placesResponse = await axios.get(
+    `${process.env.REACT_APP_API_URL}/api/v1/places`,
+    config
+  );
+  const places = placesResponse.data.data;
+
+  dispatch(updateData([], places));
+};
