@@ -166,13 +166,12 @@ const ChangePasswordForm = withFormik<MyFormProps, ChangePassFormValues>({
     values,
     formikBag: FormikBag<MyFormProps, ChangePassFormValues>
   ) => {
-    const { dispatch, token, closeModal } = formikBag.props;
+    const { token, closeModal } = formikBag.props;
     const toast = createStandaloneToast();
     try {
       await submitchangePassword(
         values.currentPassword,
         values.newPassword,
-        dispatch,
         token
       );
       toast({

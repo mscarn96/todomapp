@@ -1,7 +1,9 @@
 import { Box, Center } from "@chakra-ui/layout";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useContextState } from "../context/Store";
+import mapDatatoGoogleMaps from "../utils/mapDatatoGoogleMap";
 // import geocodeLatLng from "../utils/geocoder";
-import Place from "./Place";
+import Place from "./createPlace/Place";
 
 interface IMap {
   mapType: google.maps.MapTypeId;
@@ -21,6 +23,12 @@ const Map = (props: IMap) => {
   const [isPlaceInfoVisible, setPlaceInfoVisible] = useState(false);
 
   const [selectedAddress, setSelectedAddress] = useState<string>();
+
+  const [selectedLatLng, setSelectedLatLng] = useState<[number, number]>();
+
+  const state = useContextState();
+
+  const markers: Array<google.maps.Marker> = useMemo(() => [], []);
 
   // const geocoder = useCallback(() => new google.maps.Geocoder(), []);
 
@@ -59,9 +67,10 @@ const Map = (props: IMap) => {
     }
   };
 
-  const addMarker = useCallback(
+  const handleMapClick = useCallback(
     (e: google.maps.MapMouseEvent, map: google.maps.Map) => {
       const oldMarker = selectedMarker;
+      oldMarker?.setMap(null);
 
       const newMarker = new google.maps.Marker({
         position: e.latLng,
@@ -72,15 +81,26 @@ const Map = (props: IMap) => {
       });
       setPlaceInfoVisible(true);
       setSelectedMarker(newMarker);
-      oldMarker?.setMap(null);
       setSelectedAddress("ydadudadahdaj");
-      console.log(newMarker.getPosition()?.toString());
+      // console.log(newMarker.getPosition()?.toString());
+      const lat = newMarker.getPosition()?.lat();
+      const lng = newMarker.getPosition()?.lng();
+      if (lat !== undefined && lng !== undefined) {
+        setSelectedLatLng([lat, lng]);
+      }
+
       // geocodeLatLng(geocoder(), newMarker?.getPosition(), setSelectedAddress);
     },
     [selectedMarker]
   );
 
   useEffect(startMap, [startMap]);
+
+  useEffect(() => mapDatatoGoogleMaps(state, map, markers), [
+    map,
+    markers,
+    state,
+  ]);
 
   useEffect(() => {
     let clickListener: google.maps.MapsEventListener;
@@ -89,7 +109,7 @@ const Map = (props: IMap) => {
       clickListener = google.maps.event.addListener(
         map,
         "click",
-        (event: google.maps.MapMouseEvent) => addMarker(event, map)
+        (event: google.maps.MapMouseEvent) => handleMapClick(event, map)
       );
       selectedMarker?.addListener("dragend", () =>
         console.log(`position: ${selectedMarker?.getPosition()}`)
@@ -100,7 +120,7 @@ const Map = (props: IMap) => {
       google.maps.event.removeListener(clickListener);
       google.maps.event.removeListener(dragListener);
     };
-  }, [map, addMarker, selectedMarker]);
+  }, [map, handleMapClick, selectedMarker]);
 
   return (
     <Center h="100vh" className="map-container">
@@ -113,12 +133,17 @@ const Map = (props: IMap) => {
         borderColor="teal.800"
         borderRadius="base"
       ></Box>
-      <Place
-        isVisible={isPlaceInfoVisible}
-        setVisible={setPlaceInfoVisible}
-        placeName={selectedAddress ? selectedAddress : ""}
-        map={map}
-      />
+      {isPlaceInfoVisible && (
+        <Place
+          isVisible={isPlaceInfoVisible}
+          setVisible={setPlaceInfoVisible}
+          placeName={selectedAddress ? selectedAddress : ""}
+          map={map}
+          coordinates={selectedLatLng}
+          setSelectedMarker={setSelectedMarker}
+          marker={selectedMarker}
+        />
+      )}
     </Center>
   );
 };

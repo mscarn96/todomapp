@@ -8,11 +8,11 @@ interface Place {
   location: {
     coordinates: [number, number];
   };
-  _id: string;
+  _id?: string;
   name: string;
   icon: string;
-  user: string;
-  createdAt: Date;
+  user?: string;
+  createdAt?: Date;
 }
 
 interface Task {

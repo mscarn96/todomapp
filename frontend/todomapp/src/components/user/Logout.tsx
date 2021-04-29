@@ -38,9 +38,9 @@ const Logout = (props: IDeletePlaces) => {
   });
 
   const submit = async () => {
+    closeModal();
     try {
       await logout(dispatch, removeCookies);
-      console.log(`dad`);
     } catch (err) {
       toast({
         title: "Something went wrong",
@@ -51,7 +51,6 @@ const Logout = (props: IDeletePlaces) => {
         isClosable: true,
       });
     }
-    closeModal();
   };
 
   return (

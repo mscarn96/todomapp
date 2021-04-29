@@ -152,7 +152,6 @@ export const submitChangeName = async (
 export const submitchangePassword = async (
   currentPassword: string,
   newPassword: string,
-  dispatch: React.Dispatch<Action>,
   token: string
 ) => {
   const config = {
@@ -179,7 +178,7 @@ export const submitDeletePlacesAndTasks = async (
   );
   await axios.delete(`${process.env.REACT_APP_API_URL}/api/v1/places`, config);
 
-  dispatch(updateData([], []));
+  getAllData(dispatch, token);
 };
 
 // ?? may needed testing later
@@ -197,12 +196,7 @@ export const submitDeleteTasks = async (
     config
   );
 
-  const places = await axios.get(
-    `${process.env.REACT_APP_API_URL}/api/v1/places`,
-    config
-  );
-
-  dispatch(updateData([], places.data.data));
+  getAllData(dispatch, token);
 };
 
 // ?? may needed testing later
@@ -228,7 +222,33 @@ export const getAllData = async (
     `${process.env.REACT_APP_API_URL}/api/v1/places`,
     config
   );
+
+  const tasksResponse = await axios.get(
+    `${process.env.REACT_APP_API_URL}/api/v1/user/tasks`,
+    config
+  );
+
+  const tasks = tasksResponse.data.data;
+
   const places = placesResponse.data.data;
 
-  dispatch(updateData([], places));
+  dispatch(updateData(tasks, places));
+};
+
+export const addPlace = async (
+  place: Place,
+  dispatch: React.Dispatch<Action>,
+  token: string
+) => {
+  const config = {
+    headers: { Authorization: `bearer ${token}` },
+  };
+
+  await axios.post(
+    `${process.env.REACT_APP_API_URL}/api/v1/places`,
+    { ...place },
+    config
+  );
+
+  getAllData(dispatch, token);
 };

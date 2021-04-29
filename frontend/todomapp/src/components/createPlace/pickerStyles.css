@@ -1,0 +1,4 @@
+div.swiper-slide.swiper-slide-active {
+  border: 5px solid #319795;
+  border-radius: 25%;
+}
