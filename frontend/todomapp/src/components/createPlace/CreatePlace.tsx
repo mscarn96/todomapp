@@ -31,7 +31,7 @@ const submitPlace = async (
   name: string,
   dispatch: React.Dispatch<any>,
   token: string,
-  closePlaceInfo: () => void,
+  closeCreatePlace: () => void,
   setSelectedMarker: React.Dispatch<
     React.SetStateAction<google.maps.Marker | undefined>
   >,
@@ -45,6 +45,7 @@ const submitPlace = async (
       },
       name,
       icon,
+      tasks: [],
     };
     try {
       await addPlace(place, dispatch, token);
@@ -79,10 +80,10 @@ const submitPlace = async (
     });
   }
 
-  closePlaceInfo();
+  closeCreatePlace();
 };
 
-const Place = (props: IPlace) => {
+const CreatePlace = (props: IPlace) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [name, setName] = useState("");
@@ -98,7 +99,7 @@ const Place = (props: IPlace) => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setName(event.target.value);
 
-  const closePlaceInfo = () => {
+  const closeCreatePlace = () => {
     props.setVisible(false);
     onClose();
   };
@@ -106,7 +107,7 @@ const Place = (props: IPlace) => {
   useOutsideClick({
     ref: ref,
     handler: () => {
-      closePlaceInfo();
+      closeCreatePlace();
     },
   });
 
@@ -136,7 +137,7 @@ const Place = (props: IPlace) => {
         >
           <CloseButton
             size="lg"
-            onClick={closePlaceInfo}
+            onClick={closeCreatePlace}
             alignSelf="flex-end"
           />
           <Heading textAlign="center" m="1" size="xl">
@@ -168,7 +169,7 @@ const Place = (props: IPlace) => {
                 name,
                 dispatch,
                 cookies.jwt,
-                closePlaceInfo,
+                closeCreatePlace,
                 props.setSelectedMarker,
                 props.marker
               )
@@ -182,4 +183,4 @@ const Place = (props: IPlace) => {
   );
 };
 
-export default Place;
+export default CreatePlace;

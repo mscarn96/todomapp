@@ -8,6 +8,15 @@ import StartMenu from "./components/startmenu/StartMenu";
 import { useCookies } from "react-cookie";
 import { useContextDispatch, useContextState } from "./context/Store";
 import { getMe } from "./utils/apiCalls";
+import { Application } from "react-rainbow-components";
+
+const customTheme = {
+  rainbow: {
+    palette: {
+      brand: "#319795",
+    },
+  },
+};
 
 function App() {
   const [scriptLoaded, setScriptLoaded] = useState(false);
@@ -39,13 +48,15 @@ function App() {
   //checks if user logged out
 
   return (
-    <Box className="App" w="100%" h="100%" overflow="hidden">
-      {isLoggedIn ? (
-        <Main scriptLoaded={scriptLoaded} />
-      ) : (
-        <StartMenu setIsLoggedIn={setIsLoggedIn} />
-      )}
-    </Box>
+    <Application theme={customTheme}>
+      <Box className="App" w="100%" h="100%" overflow="hidden">
+        {isLoggedIn ? (
+          <Main scriptLoaded={scriptLoaded} />
+        ) : (
+          <StartMenu setIsLoggedIn={setIsLoggedIn} />
+        )}
+      </Box>
+    </Application>
   );
 }
 

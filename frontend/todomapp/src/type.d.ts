@@ -13,16 +13,17 @@ interface Place {
   icon: string;
   user?: string;
   createdAt?: Date;
+  tasks: Array<Task>;
 }
 
 interface Task {
-  _id: string;
+  _id?: string;
   completed: boolean;
   name: string;
-  completionDate: Date;
-  place: Place;
-  user: User;
-  createdAt: Date;
+  completionDate: String;
+  place?: Place;
+  user?: User;
+  createdAt?: Date;
 }
 
 type AppState = {

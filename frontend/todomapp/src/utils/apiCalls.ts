@@ -252,3 +252,42 @@ export const addPlace = async (
 
   getAllData(dispatch, token);
 };
+
+export const addTask = async (
+  place: Place,
+  task: Task,
+  dispatch: React.Dispatch<Action>,
+  token: string
+) => {
+  const config = {
+    headers: { Authorization: `bearer ${token}` },
+  };
+
+  await axios.post(
+    `${process.env.REACT_APP_API_URL}/api/v1/places/${place._id}/tasks`,
+    { ...task },
+    config
+  );
+
+  await getAllData(dispatch, token);
+};
+
+export const updateTask = async (
+  place: Place,
+  taskToReplace: Task,
+  taskID: string,
+  dispatch: React.Dispatch<Action>,
+  token: string
+) => {
+  const config = {
+    headers: { Authorization: `bearer ${token}` },
+  };
+
+  await axios.put(
+    `${process.env.REACT_APP_API_URL}/api/v1/places/${place._id}/tasks/${taskID}`,
+    taskToReplace,
+    config
+  );
+
+  await getAllData(dispatch, token);
+};

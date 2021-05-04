@@ -41,8 +41,6 @@ exports.updateTask = asyncHandler(async (req, res, next) => {
     runValidators: true,
   });
 
-  console.log(task);
-
   res.status(200).json({ success: true, data: task });
 });
 
@@ -64,7 +62,6 @@ exports.addTask = asyncHandler(async (req, res, next) => {
   req.body.place = req.params.placeId;
   req.body.user = req.user.id;
   const task = await Task.create(req.body);
-  console.log(task);
 
   res.status(200).json({ success: true, data: task });
 });

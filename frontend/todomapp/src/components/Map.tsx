@@ -3,7 +3,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useContextState } from "../context/Store";
 import mapDatatoGoogleMaps from "../utils/mapDatatoGoogleMap";
 // import geocodeLatLng from "../utils/geocoder";
-import Place from "./createPlace/Place";
+import CreatePlace from "./createPlace/CreatePlace";
+import Place from "./place/Place";
 
 interface IMap {
   mapType: google.maps.MapTypeId;
@@ -22,6 +23,8 @@ const Map = (props: IMap) => {
 
   const [isPlaceInfoVisible, setPlaceInfoVisible] = useState(false);
 
+  const [isCreatePlaceVisible, setCreatePlaceVisible] = useState(false);
+
   const [selectedAddress, setSelectedAddress] = useState<string>();
 
   const [selectedLatLng, setSelectedLatLng] = useState<[number, number]>();
@@ -29,6 +32,8 @@ const Map = (props: IMap) => {
   const state = useContextState();
 
   const markers: Array<google.maps.Marker> = useMemo(() => [], []);
+
+  const [openedPlace, setOpenedPlace] = useState<Place>();
 
   // const geocoder = useCallback(() => new google.maps.Geocoder(), []);
 
@@ -79,7 +84,8 @@ const Map = (props: IMap) => {
         animation: google.maps.Animation.DROP,
         map: map,
       });
-      setPlaceInfoVisible(true);
+      setCreatePlaceVisible(true);
+      setPlaceInfoVisible(false);
       setSelectedMarker(newMarker);
       setSelectedAddress("ydadudadahdaj");
       // console.log(newMarker.getPosition()?.toString());
@@ -96,11 +102,17 @@ const Map = (props: IMap) => {
 
   useEffect(startMap, [startMap]);
 
-  useEffect(() => mapDatatoGoogleMaps(state, map, markers), [
-    map,
-    markers,
-    state,
-  ]);
+  useEffect(
+    () =>
+      mapDatatoGoogleMaps(
+        state,
+        map,
+        markers,
+        setPlaceInfoVisible,
+        setOpenedPlace
+      ),
+    [map, markers, state]
+  );
 
   useEffect(() => {
     let clickListener: google.maps.MapsEventListener;
@@ -133,15 +145,22 @@ const Map = (props: IMap) => {
         borderColor="teal.800"
         borderRadius="base"
       ></Box>
-      {isPlaceInfoVisible && (
-        <Place
-          isVisible={isPlaceInfoVisible}
-          setVisible={setPlaceInfoVisible}
+      {isCreatePlaceVisible && (
+        <CreatePlace
+          isVisible={isCreatePlaceVisible}
+          setVisible={setCreatePlaceVisible}
           placeName={selectedAddress ? selectedAddress : ""}
           map={map}
           coordinates={selectedLatLng}
           setSelectedMarker={setSelectedMarker}
           marker={selectedMarker}
+        />
+      )}
+      {isPlaceInfoVisible && (
+        <Place
+          isVisible={isPlaceInfoVisible}
+          setVisible={setPlaceInfoVisible}
+          openedPlace={openedPlace}
         />
       )}
     </Center>

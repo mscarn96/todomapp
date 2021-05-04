@@ -13,16 +13,27 @@ const clearMarkers = (markers: Array<google.maps.Marker>) => {
   setMapOnAll(null, markers);
 };
 
-// Deletes all markers in the array by removing references to them.
+// Deletes all markers in the array
 const deleteMarkers = (markers: Array<google.maps.Marker>) => {
   clearMarkers(markers);
   markers.splice(0, markers.length);
 };
 
+const openPlaceInfo = (
+  place: Place,
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>,
+  setOpenedPlace: React.Dispatch<React.SetStateAction<Place | undefined>>
+) => {
+  setOpenedPlace(place);
+  setVisible(true);
+};
+
 const mapDatatoGoogleMaps = (
   state: AppState,
   map: google.maps.Map | undefined,
-  markers: Array<google.maps.Marker>
+  markers: Array<google.maps.Marker>,
+  setPlaceInfoVisible: React.Dispatch<React.SetStateAction<boolean>>,
+  setOpenedPlace: React.Dispatch<React.SetStateAction<Place | undefined>>
 ) => {
   if (map) {
     deleteMarkers(markers);
@@ -40,7 +51,9 @@ const mapDatatoGoogleMaps = (
           scaledSize: new google.maps.Size(64, 64),
         },
       });
-      marker.addListener("click", () => console.log(`marker clicked`));
+      marker.addListener("click", () =>
+        openPlaceInfo(place, setPlaceInfoVisible, setOpenedPlace)
+      );
       markers.push(marker);
     });
   }
