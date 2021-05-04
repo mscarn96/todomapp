@@ -36,10 +36,12 @@ exports.updateTask = asyncHandler(async (req, res, next) => {
     );
   }
 
-  task = await Task.findOneAndUpdate(req.params.id, req.body, {
+  task = await Task.findOneAndUpdate({ _id: req.params.id }, req.body, {
     new: true,
     runValidators: true,
   });
+
+  console.log(task);
 
   res.status(200).json({ success: true, data: task });
 });
