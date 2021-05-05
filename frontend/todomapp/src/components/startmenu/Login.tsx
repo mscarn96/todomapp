@@ -1,3 +1,8 @@
+import React, { useState } from "react";
+
+import { useCookies } from "react-cookie";
+import { CookieSetOptions } from "universal-cookie";
+
 import { Button } from "@chakra-ui/button";
 import {
   FormControl,
@@ -16,13 +21,12 @@ import {
   FastFieldProps,
   FormikBag,
 } from "formik";
-import React, { useState } from "react";
+
 import { submitLoginForm } from "../../utils/apiCalls";
 import { Action } from "../../context/actions";
 import { useContextDispatch } from "../../context/Store";
+
 import ResultModal from "./ResultModal";
-import { useCookies } from "react-cookie";
-import { CookieSetOptions } from "universal-cookie";
 
 export interface LoginFormValues {
   email: string;

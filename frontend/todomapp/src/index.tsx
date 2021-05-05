@@ -10,6 +10,7 @@ import theme from "./utils/theme";
 
 import "@fontsource/arsenal/400.css";
 import "@fontsource/bree-serif/400.css";
+import "./style.css";
 
 ReactDOM.render(
   <React.StrictMode>

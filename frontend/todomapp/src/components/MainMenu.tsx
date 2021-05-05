@@ -1,8 +1,7 @@
 import { Button, IconButton } from "@chakra-ui/button";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { ArrowUpIcon } from "@chakra-ui/icons";
-import { Input } from "@chakra-ui/input";
-import { Container } from "@chakra-ui/layout";
+import { Box, Container, Flex, Heading } from "@chakra-ui/layout";
 import {
   Drawer,
   DrawerBody,
@@ -13,9 +12,7 @@ import {
   DrawerOverlay,
 } from "@chakra-ui/modal";
 
-interface IMain {}
-
-const MainMenu = (props: IMain) => {
+const MainMenu = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -36,7 +33,7 @@ const MainMenu = (props: IMain) => {
         borderRadius="md"
         bgColor="rgba(255,255,255,0.5)"
       >
-        Open Menu
+        Show all
         <IconButton
           colorScheme="teal"
           aria-label="Open main menu"
@@ -50,17 +47,23 @@ const MainMenu = (props: IMain) => {
         <DrawerOverlay>
           <DrawerContent>
             <DrawerCloseButton />
-            <DrawerHeader>Create your account</DrawerHeader>
+            <DrawerHeader>All places and tasks</DrawerHeader>
 
             <DrawerBody>
-              <Input placeholder="Type here..." />
+              <Flex justify="space-around">
+                <Box>
+                  <Heading>Places</Heading>
+                </Box>
+                <Box>
+                  <Heading>Tasks</Heading>
+                </Box>
+              </Flex>
             </DrawerBody>
 
             <DrawerFooter>
               <Button variant="outline" mr={3} onClick={onClose}>
-                Cancel
+                Close
               </Button>
-              <Button colorScheme="teal">Save</Button>
             </DrawerFooter>
           </DrawerContent>
         </DrawerOverlay>

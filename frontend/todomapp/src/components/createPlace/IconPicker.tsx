@@ -1,14 +1,16 @@
+import { useEffect, useState } from "react";
+
 import { Box } from "@chakra-ui/layout";
+import { Img } from "@chakra-ui/image";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore, { Navigation } from "swiper";
 
-import { Img } from "@chakra-ui/image";
 import getIcons from "../../utils/getIcons";
 
 import "swiper/swiper-bundle.min.css";
 import "swiper/components/navigation/navigation.min.css";
 import "./pickerStyles.css";
-import { useEffect, useState } from "react";
 
 const iconsSVGS = getIcons(require.context("../../assets", true, /\.svg$/));
 

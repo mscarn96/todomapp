@@ -1,3 +1,17 @@
+import { useEffect } from "react";
+
+import { useCookies } from "react-cookie";
+
+import {
+  FastFieldProps,
+  Field,
+  Form,
+  FormikBag,
+  FormikErrors,
+  FormikProps,
+  withFormik,
+} from "formik";
+
 import { Button } from "@chakra-ui/button";
 import {
   FormControl,
@@ -15,21 +29,11 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/modal";
-import { createStandaloneToast } from "@chakra-ui/toast";
-import {
-  FastFieldProps,
-  Field,
-  Form,
-  FormikBag,
-  FormikErrors,
-  FormikProps,
-  withFormik,
-} from "formik";
-import { useEffect } from "react";
-import { useCookies } from "react-cookie";
+
 import { Action } from "../../context/actions";
 import { useContextDispatch } from "../../context/Store";
 import { submitchangePassword } from "../../utils/apiCalls";
+import { showErrorToast, showSuccessToast } from "../../utils/toast";
 
 interface IChangePassword {
   isVisible: boolean;
@@ -167,30 +171,18 @@ const ChangePasswordForm = withFormik<MyFormProps, ChangePassFormValues>({
     formikBag: FormikBag<MyFormProps, ChangePassFormValues>
   ) => {
     const { token, closeModal } = formikBag.props;
-    const toast = createStandaloneToast();
     try {
       await submitchangePassword(
         values.currentPassword,
         values.newPassword,
         token
       );
-      toast({
-        title: "Password changed.",
-        description: "You've succesfully changed your password.",
-        status: "success",
-        position: "top",
-        duration: 3000,
-        isClosable: true,
-      });
+      showSuccessToast(
+        "Password changed.",
+        "You've succesfully changed your password."
+      );
     } catch (err) {
-      toast({
-        title: "Something went wrong",
-        description: `${err.response.data.error}`,
-        status: "error",
-        position: "top",
-        duration: 3000,
-        isClosable: true,
-      });
+      showErrorToast("Something went wrong", `${err.response.data.error}`);
     }
     formikBag.setSubmitting(false);
     closeModal();

@@ -1,14 +1,18 @@
+import { useEffect, useRef, useState } from "react";
+
+import { useCookies } from "react-cookie";
+
 import { Button } from "@chakra-ui/button";
 import { CloseButton } from "@chakra-ui/close-button";
 import { useDisclosure, useOutsideClick } from "@chakra-ui/hooks";
 import { Input } from "@chakra-ui/input";
 import { Box, Heading, Text } from "@chakra-ui/layout";
-import { createStandaloneToast } from "@chakra-ui/toast";
 import { ScaleFade } from "@chakra-ui/transition";
-import { useEffect, useRef, useState } from "react";
-import { useCookies } from "react-cookie";
+
 import { useContextDispatch } from "../../context/Store";
 import { addPlace } from "../../utils/apiCalls";
+import { showErrorToast, showSuccessToast } from "../../utils/toast";
+
 import IconPicker from "./IconPicker";
 
 interface IPlace {
@@ -22,8 +26,6 @@ interface IPlace {
   >;
   marker: google.maps.Marker | undefined;
 }
-
-const toast = createStandaloneToast();
 
 const submitPlace = async (
   coordinates: [number, number] | undefined,
@@ -49,35 +51,17 @@ const submitPlace = async (
     };
     try {
       await addPlace(place, dispatch, token);
-      toast({
-        title: "Place added.",
-        description: `You've successfully added place named ${place.name}`,
-        status: "success",
-        position: "top",
-        duration: 3000,
-        isClosable: true,
-      });
+      showSuccessToast(
+        `Place added.`,
+        `You've successfully added place named ${place.name}`
+      );
       marker?.setMap(null);
       setSelectedMarker(undefined);
     } catch (error) {
-      toast({
-        title: "Something went wrong",
-        description: `${error.response.data.error}`,
-        status: "error",
-        position: "top",
-        duration: 3000,
-        isClosable: true,
-      });
+      showErrorToast("Something went wrong", `${error.response.data.error}`);
     }
   } else {
-    toast({
-      title: "Something went wrong",
-      description: `Can't add place`,
-      status: "error",
-      position: "top",
-      duration: 3000,
-      isClosable: true,
-    });
+    showErrorToast("Something went wrong", `Can't add place`);
   }
 
   closeCreatePlace();

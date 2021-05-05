@@ -1,17 +1,20 @@
+import { useCookies } from "react-cookie";
+
 import { IconButton } from "@chakra-ui/button";
 import { CheckCircleIcon } from "@chakra-ui/icons";
 import { Box, Heading, Text } from "@chakra-ui/layout";
-import { createStandaloneToast } from "@chakra-ui/toast";
-import React from "react";
-import { useCookies } from "react-cookie";
+
 import { useContextDispatch, useContextState } from "../../context/Store";
 import { updateTask } from "../../utils/apiCalls";
+import {
+  showErrorToast,
+  showSuccessToast,
+  showWarningToast,
+} from "../../utils/toast";
 
 interface ITasks {
   openedPlace: Place | undefined;
 }
-
-const toast = createStandaloneToast();
 
 const toggleCompleteTask = async (
   task: Task,
@@ -24,31 +27,20 @@ const toggleCompleteTask = async (
     name: task.name,
     completionDate: task.completionDate,
   };
-  const toastStatus = task.completed ? "warning" : "success";
 
   if (openedPlace && task._id)
     try {
       await updateTask(openedPlace, taskToReplace, task._id, dispatch, token);
-      console.log(taskToReplace.name);
-      toast({
-        title: "Task status changed",
-        description: `Task marked as ${
-          task.completed ? `uncompleted` : "completed"
-        }`,
-        status: toastStatus,
-        position: "top",
-        duration: 3000,
-        isClosable: true,
-      });
+      if (task.completed) {
+        showWarningToast("Task status changed", "Task marked as uncompleted");
+      } else {
+        showSuccessToast("Task status changed", "Task marked as completed");
+      }
     } catch (error) {
-      toast({
-        title: "Something went wrong",
-        description: `Can't change task status: ${error.response.data.error}`,
-        status: "error",
-        position: "top",
-        duration: 3000,
-        isClosable: true,
-      });
+      showErrorToast(
+        "Something went wrong",
+        `Can't change task status: ${error.response.data.error}`
+      );
     }
 };
 

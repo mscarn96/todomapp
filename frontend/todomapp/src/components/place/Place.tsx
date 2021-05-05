@@ -1,13 +1,15 @@
+import React, { useEffect, useState } from "react";
+
+import { useCookies } from "react-cookie";
+
 import { CloseButton } from "@chakra-ui/close-button";
 import { useDisclosure } from "@chakra-ui/hooks";
 import { Box, Heading } from "@chakra-ui/layout";
-import { useToast } from "@chakra-ui/toast";
 import { ScaleFade } from "@chakra-ui/transition";
-import React, { useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 
 import { useContextDispatch } from "../../context/Store";
 import { addTask } from "../../utils/apiCalls";
+import { showErrorToast, showSuccessToast } from "../../utils/toast";
 
 import TaskCreator from "./TaskCreator";
 import Tasks from "./Tasks";
@@ -35,8 +37,6 @@ const Place = (props: IPlace) => {
 
   const [cookies] = useCookies();
 
-  const toast = useToast();
-
   useEffect(() => {
     if (props.isVisible) {
       onOpen();
@@ -59,23 +59,10 @@ const Place = (props: IPlace) => {
           completed: false,
         };
         await addTask(place, task, dispatch, cookies.jwt);
-        toast({
-          title: "Task added",
-          description: "You've successfully added a new task",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
+        showSuccessToast("Task added", "You've successfully added a new task");
         setTaskName(``);
       } catch (error) {
-        toast({
-          title: "Something went wrong",
-          description: `${error.response.data.error}`,
-          status: "error",
-          position: "top",
-          duration: 3000,
-          isClosable: true,
-        });
+        showErrorToast("Something went wrong", `${error.response.data.error}`);
       }
     }
   };
@@ -121,7 +108,5 @@ const Place = (props: IPlace) => {
     </Box>
   );
 };
-
-//todo finish this component
 
 export default Place;

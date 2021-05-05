@@ -1,8 +1,11 @@
-import { Box, Center } from "@chakra-ui/layout";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
+import { Box, Center } from "@chakra-ui/layout";
+
 import { useContextState } from "../context/Store";
 import mapDatatoGoogleMaps from "../utils/mapDatatoGoogleMap";
 // import geocodeLatLng from "../utils/geocoder";
+
 import CreatePlace from "./createPlace/CreatePlace";
 import Place from "./place/Place";
 

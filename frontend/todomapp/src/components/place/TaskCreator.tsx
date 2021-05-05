@@ -4,6 +4,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { Input } from "@chakra-ui/input";
 import { Box } from "@chakra-ui/layout";
 import { Collapse } from "@chakra-ui/transition";
+
 import { DateTimePicker } from "react-rainbow-components";
 
 import "./datePickerStyles.css";

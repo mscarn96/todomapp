@@ -1,3 +1,7 @@
+import { useEffect, useRef, useState } from "react";
+
+import { useCookies } from "react-cookie";
+
 import { Button } from "@chakra-ui/button";
 import { FormControl, FormLabel } from "@chakra-ui/form-control";
 import { useDisclosure } from "@chakra-ui/hooks";
@@ -12,11 +16,10 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/modal";
-import { useToast } from "@chakra-ui/toast";
-import { useEffect, useRef, useState } from "react";
-import { useCookies } from "react-cookie";
+
 import { useContextDispatch } from "../../context/Store";
 import { submitChangeName } from "../../utils/apiCalls";
+import { showErrorToast, showSuccessToast } from "../../utils/toast";
 
 interface IChangeName {
   isVisible: boolean;
@@ -36,8 +39,6 @@ const ChangeName = (props: IChangeName) => {
 
   const [cookies] = useCookies();
 
-  const toast = useToast();
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.value;
     setName(name);
@@ -56,23 +57,12 @@ const ChangeName = (props: IChangeName) => {
   const updateName = async () => {
     try {
       await submitChangeName(name, dispatch, cookies.jwt);
-      toast({
-        title: "Name changed.",
-        description: "You've successfully changed your name.",
-        status: "success",
-        position: "top",
-        duration: 3000,
-        isClosable: true,
-      });
+      showSuccessToast(
+        "Name changed.",
+        "You've successfully changed your name."
+      );
     } catch (error) {
-      toast({
-        title: "Something went wrong",
-        description: `${error.response.data.error}`,
-        status: "error",
-        position: "top",
-        duration: 3000,
-        isClosable: true,
-      });
+      showErrorToast("Something went wrong", `${error.response.data.error}`);
     }
 
     setName("");

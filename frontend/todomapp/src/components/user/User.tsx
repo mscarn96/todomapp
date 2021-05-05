@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import { Button } from "@chakra-ui/button";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { Flex, Text } from "@chakra-ui/layout";
@@ -8,23 +10,26 @@ import {
   MenuItem,
   MenuList,
 } from "@chakra-ui/menu";
-import { useState } from "react";
+
 import { useContextState } from "../../context/Store";
+
 import ChangeName from "./ChangeName";
 import ChangePassword from "./ChangePassword";
 import DeletePlaces from "./DeletePlaces";
 import DeleteTasks from "./DeleteTasks";
 import Logout from "./Logout";
 
-interface Props {}
-
-const User = (props: Props) => {
+const User = () => {
   const user = useContextState().user;
 
   const [isChangeNameVisible, setChangeNameVisible] = useState(false);
+
   const [isChangePasswordVisible, setChangePasswordVisible] = useState(false);
+
   const [isDeleteTasksVisible, setDeleteTasksVisible] = useState(false);
+
   const [isDeletePlacesVisible, setDeletePlacesVisible] = useState(false);
+
   const [isLogoutVisible, setLogoutVisible] = useState(false);
 
   return (

@@ -1,12 +1,5 @@
-import { Button } from "@chakra-ui/button";
-import {
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-} from "@chakra-ui/form-control";
-import { useDisclosure } from "@chakra-ui/hooks";
-import { Input } from "@chakra-ui/input";
-import { Flex, Heading } from "@chakra-ui/layout";
+import { useState } from "react";
+
 import {
   withFormik,
   FormikProps,
@@ -17,11 +10,21 @@ import {
   FormikBag,
 } from "formik";
 
-import { useState } from "react";
-import ResultModal from "./ResultModal";
+import { Button } from "@chakra-ui/button";
+import {
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+} from "@chakra-ui/form-control";
+import { useDisclosure } from "@chakra-ui/hooks";
+import { Input } from "@chakra-ui/input";
+import { Flex, Heading } from "@chakra-ui/layout";
+
 import { submitRegisterForm } from "../../utils/apiCalls";
 import { useContextDispatch } from "../../context/Store";
 import { Action } from "../../context/actions";
+
+import ResultModal from "./ResultModal";
 
 export interface RegisterFormValues {
   name: string;

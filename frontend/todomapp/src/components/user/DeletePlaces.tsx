@@ -1,3 +1,7 @@
+import React, { useEffect, useRef } from "react";
+
+import { useCookies } from "react-cookie";
+
 import { Button } from "@chakra-ui/button";
 import { useDisclosure } from "@chakra-ui/hooks";
 import {
@@ -8,11 +12,10 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
 } from "@chakra-ui/modal";
-import { useToast } from "@chakra-ui/toast";
-import React, { useEffect, useRef } from "react";
-import { useCookies } from "react-cookie";
+
 import { useContextDispatch } from "../../context/Store";
 import { submitDeletePlacesAndTasks } from "../../utils/apiCalls";
+import { showErrorToast, showInfoToast } from "../../utils/toast";
 
 interface IDeletePlaces {
   isVisible: boolean;
@@ -23,7 +26,6 @@ const DeletePlaces = (props: IDeletePlaces) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef(null);
   const dispatch = useContextDispatch();
-  const toast = useToast();
   const [cookies] = useCookies();
 
   const closeModal = () => {
@@ -40,23 +42,12 @@ const DeletePlaces = (props: IDeletePlaces) => {
   const submit = async () => {
     try {
       await submitDeletePlacesAndTasks(dispatch, cookies.jwt);
-      toast({
-        title: "Places and Tasks Deleted",
-        description: "You've succesfully deleted all your places and tasks",
-        status: "info",
-        position: "top",
-        duration: 3000,
-        isClosable: true,
-      });
+      showInfoToast(
+        "Places and Tasks Deleted",
+        "You've succesfully deleted all your places and tasks"
+      );
     } catch (err) {
-      toast({
-        title: "Something went wrong",
-        description: `${err.response.data.error}`,
-        status: "error",
-        position: "top",
-        duration: 3000,
-        isClosable: true,
-      });
+      showErrorToast("Something went wrong", `${err.response.data.error}`);
     }
     closeModal();
   };

@@ -1,5 +1,7 @@
-import { Flex } from "@chakra-ui/layout";
 import { useState } from "react";
+
+import { Flex } from "@chakra-ui/layout";
+
 import Login from "./Login";
 import Register from "./Register";
 
