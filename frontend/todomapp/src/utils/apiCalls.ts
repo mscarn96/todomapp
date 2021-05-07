@@ -6,8 +6,8 @@ import {
   updateData,
   updateUser,
 } from "../context/actions";
-import { LoginFormValues } from "../components/startmenu/Login";
-import { RegisterFormValues } from "../components/startmenu/Register";
+import { LoginFormValues } from "../components/startMenu/Login";
+import { RegisterFormValues } from "../components/startMenu/Register";
 import React from "react";
 import { CookieSetOptions } from "universal-cookie";
 
@@ -199,6 +199,25 @@ export const submitDeleteTasks = async (
   getAllData(dispatch, token);
 };
 
+export const submitDeleteSingleTask = async (
+  taskId: string | undefined,
+  placeId: string | undefined,
+  dispatch: React.Dispatch<Action>,
+  token: string
+) => {
+  const config = {
+    headers: { Authorization: `bearer ${token}` },
+  };
+  if (placeId && taskId) {
+    await axios.delete(
+      `${process.env.REACT_APP_API_URL}/api/v1/places/${placeId}/tasks/${taskId}`,
+      config
+    );
+  }
+
+  getAllData(dispatch, token);
+};
+
 // ?? may needed testing later
 
 export const logout = async (
@@ -273,7 +292,7 @@ export const addTask = async (
 };
 
 export const updateTask = async (
-  place: Place,
+  placeId: string,
   taskToReplace: Task,
   taskID: string,
   dispatch: React.Dispatch<Action>,
@@ -284,7 +303,7 @@ export const updateTask = async (
   };
 
   await axios.put(
-    `${process.env.REACT_APP_API_URL}/api/v1/places/${place._id}/tasks/${taskID}`,
+    `${process.env.REACT_APP_API_URL}/api/v1/places/${placeId}/tasks/${taskID}`,
     taskToReplace,
     config
   );

@@ -1,4 +1,11 @@
-html body {
-  font-size: 1rem;
+:root {
+  --chakra-fonts-heading: "Bree Serif", serif !important;
+  --chakra-fonts-body: Arsenal, sans-serif im !important;
+  --chakra-fonts-mono: SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace !important;
 }
-/*overwrite chakra default */
+
+/* This is workaround for chakra bug,*/
+/* which causes font changing when certain ui events happen,*/
+/* because it overwrites existing fonts with default ones for few seconds. */
+/* At the moment I can't locate what triggers theme overwrite. */

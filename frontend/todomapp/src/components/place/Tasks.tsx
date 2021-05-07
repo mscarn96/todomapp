@@ -16,9 +16,9 @@ interface ITasks {
   openedPlace: Place | undefined;
 }
 
-const toggleCompleteTask = async (
+export const toggleCompleteTask = async (
   task: Task,
-  openedPlace: Place | undefined,
+  placeId: string | undefined,
   dispatch: React.Dispatch<any>,
   token: string
 ) => {
@@ -28,9 +28,9 @@ const toggleCompleteTask = async (
     completionDate: task.completionDate,
   };
 
-  if (openedPlace && task._id)
+  if (task._id && placeId)
     try {
-      await updateTask(openedPlace, taskToReplace, task._id, dispatch, token);
+      await updateTask(placeId, taskToReplace, task._id, dispatch, token);
       if (task.completed) {
         showWarningToast("Task status changed", "Task marked as uncompleted");
       } else {
@@ -64,6 +64,9 @@ const Tasks = (props: ITasks) => {
   return (
     <Box w="100%" maxH="35vh">
       <Heading textAlign="center">{currentPlace?.name}</Heading>
+      <Text as="b" textAlign="center" d="block">
+        {currentPlace?.location.address}
+      </Text>
       <Text as="i" textAlign="center" d="block">
         Tasks in current place:
       </Text>
@@ -101,7 +104,12 @@ const Tasks = (props: ITasks) => {
                 variant="outline"
                 color={task.completed ? `green.300` : `gray.400`}
                 onClick={() =>
-                  toggleCompleteTask(task, openedPlace, dispatch, cookies.jwt)
+                  toggleCompleteTask(
+                    task,
+                    openedPlace?._id,
+                    dispatch,
+                    cookies.jwt
+                  )
                 }
               />
             </Box>

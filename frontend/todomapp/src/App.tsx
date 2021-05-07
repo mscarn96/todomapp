@@ -4,7 +4,7 @@ import { loadMapApi } from "./utils/GoogleMapUtils";
 import { Box } from "@chakra-ui/react";
 
 import Main from "./components/Main";
-import StartMenu from "./components/startmenu/StartMenu";
+import StartMenu from "./components/startMenu/StartMenu";
 import { useCookies } from "react-cookie";
 import { useContextDispatch, useContextState } from "./context/Store";
 import { getMe } from "./utils/apiCalls";

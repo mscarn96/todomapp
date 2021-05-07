@@ -83,6 +83,9 @@ const Place = (props: IPlace) => {
           flexDirection="column"
           alignItems="center"
           justifyContent="space-around"
+          border="2px"
+          borderColor="teal.700"
+          borderRadius="lg"
         >
           <CloseButton
             size="lg"

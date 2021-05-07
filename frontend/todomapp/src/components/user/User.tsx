@@ -16,7 +16,7 @@ import { useContextState } from "../../context/Store";
 import ChangeName from "./ChangeName";
 import ChangePassword from "./ChangePassword";
 import DeletePlaces from "./DeletePlaces";
-import DeleteTasks from "./DeleteTasks";
+import DeleteCompletedTasks from "./DeleteCompletedTasks";
 import Logout from "./Logout";
 
 const User = () => {
@@ -65,7 +65,7 @@ const User = () => {
             </MenuItem>
             <MenuDivider />
             <MenuItem onClick={() => setDeleteTasksVisible(true)}>
-              Delete all tasks
+              Delete all completed tasks
             </MenuItem>
             <MenuItem onClick={() => setDeletePlacesVisible(true)}>
               Delete all places and tasks
@@ -90,7 +90,7 @@ const User = () => {
         isVisible={isChangePasswordVisible}
         setVisible={setChangePasswordVisible}
       />
-      <DeleteTasks
+      <DeleteCompletedTasks
         isVisible={isDeleteTasksVisible}
         setVisible={setDeleteTasksVisible}
       />

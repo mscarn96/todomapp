@@ -6,15 +6,18 @@ import { useContextState } from "../context/Store";
 import mapDatatoGoogleMaps from "../utils/mapDatatoGoogleMap";
 // import geocodeLatLng from "../utils/geocoder";
 
+import { showErrorToast } from "../utils/toast";
+
 import CreatePlace from "./createPlace/CreatePlace";
 import Place from "./place/Place";
+import MainMenu from "./mainMenu/MainMenu";
 
 interface IMap {
   mapType: google.maps.MapTypeId;
   mapTypeControl?: boolean;
 }
 
-type GoogleLatLng = google.maps.LatLng;
+export type GoogleLatLng = google.maps.LatLng;
 type GoogleMap = google.maps.Map;
 
 const Map = (props: IMap) => {
@@ -65,13 +68,37 @@ const Map = (props: IMap) => {
   };
 
   const defaultMapStart = (): void => {
-    const defaultAddress = new google.maps.LatLng(53.1292051, 23.1596436);
-    initMap(8, defaultAddress);
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position: GeolocationPosition) => {
+          initMap(
+            8,
+            new google.maps.LatLng(
+              position.coords.latitude,
+              position.coords.longitude
+            )
+          );
+        }
+      );
+    } else {
+      initMap(8, new google.maps.LatLng(52.23225415761537, 21.006003221991673));
+      //default map position, in case user don't have geolocation unlocked
+      showErrorToast(
+        "Geolocation Error",
+        "Can't use geolocation. Moving to default positon."
+      );
+    }
   };
 
   const startMap = (): void => {
     if (!map) {
       defaultMapStart();
+    }
+  };
+
+  const moveToTargetPlace = (latlng: GoogleLatLng) => {
+    if (map) {
+      map.panTo(latlng);
     }
   };
 
@@ -148,6 +175,7 @@ const Map = (props: IMap) => {
         borderColor="teal.800"
         borderRadius="base"
       ></Box>
+      <MainMenu moveToTargetPlace={moveToTargetPlace} />
       {isCreatePlaceVisible && (
         <CreatePlace
           isVisible={isCreatePlaceVisible}

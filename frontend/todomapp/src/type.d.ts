@@ -7,6 +7,7 @@ interface User {
 interface Place {
   location: {
     coordinates: [number, number];
+    address?: string;
   };
   _id?: string;
   name: string;
@@ -21,8 +22,8 @@ interface Task {
   completed: boolean;
   name: string;
   completionDate: String;
-  place?: Place;
-  user?: User;
+  place?: string;
+  user?: string;
   createdAt?: Date;
 }
 

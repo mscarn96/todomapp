@@ -7,7 +7,6 @@ import { useContextDispatch } from "../context/Store";
 
 import Loader from "./Loader";
 import Map from "./Map";
-import MainMenu from "./MainMenu";
 import User from "./user/User";
 
 interface IMain {
@@ -35,7 +34,6 @@ const Main = (props: IMain) => {
       {props.scriptLoaded ? (
         <>
           <Map mapType={google.maps.MapTypeId.ROADMAP} mapTypeControl={true} />
-          <MainMenu />
           <User />
         </>
       ) : (

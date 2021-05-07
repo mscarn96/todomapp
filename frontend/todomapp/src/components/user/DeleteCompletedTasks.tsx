@@ -13,30 +13,41 @@ import {
   AlertDialogOverlay,
 } from "@chakra-ui/modal";
 
-import { useContextDispatch } from "../../context/Store";
-import { submitDeleteTasks } from "../../utils/apiCalls";
+import { useContextDispatch, useContextState } from "../../context/Store";
+import { submitDeleteSingleTask } from "../../utils/apiCalls";
 import { showErrorToast, showInfoToast } from "../../utils/toast";
 
-interface IDeleteTasks {
+interface IDeleteCompletedTasks {
   isVisible: boolean;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const DeleteTasks = (props: IDeleteTasks) => {
+const DeleteCompletedTasks = (props: IDeleteCompletedTasks) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const cancelRef = useRef(null);
 
   const dispatch = useContextDispatch();
 
+  const tasks = useContextState().tasks;
+
   const [cookies] = useCookies();
 
   const submit = async () => {
     try {
-      await submitDeleteTasks(dispatch, cookies.jwt);
+      tasks?.forEach(async (task) => {
+        if (task.completed) {
+          await submitDeleteSingleTask(
+            task._id,
+            task.place,
+            dispatch,
+            cookies.jwt
+          );
+        }
+      });
       showInfoToast(
-        "Places and Tasks Deleted",
-        "You've succesfully deleted all your places and tasks"
+        "Completed Tasks deleted",
+        "You've succesfully deleted all your completed tasks"
       );
     } catch (err) {
       showErrorToast("Something went wrong", `${err.response.data.error}`);
@@ -88,4 +99,4 @@ const DeleteTasks = (props: IDeleteTasks) => {
   );
 };
 
-export default DeleteTasks;
+export default DeleteCompletedTasks;
