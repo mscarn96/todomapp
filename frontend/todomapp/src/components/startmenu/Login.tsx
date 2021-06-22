@@ -159,7 +159,14 @@ const LoginForm = withFormik<MyFormProps, LoginFormValues>({
       setIsSuccess(true);
       onOpen();
     } catch (err) {
-      setMsg(err.response.data.error);
+      
+      if (err.response) {
+        setMsg(err.response.data.error);
+      } else {
+        setMsg(err.message)
+        //handling server connection error
+      }
+      
       setIsSuccess(false);
       onOpen();
     }

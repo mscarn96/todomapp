@@ -22,6 +22,5 @@ const geocodeLatLng = async (
   );
 };
 
-// todo get this piece of shit work
 
 export default geocodeLatLng;

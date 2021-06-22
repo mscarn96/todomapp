@@ -26,6 +26,7 @@ const Place = (props: IPlace) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const initialDate = new Date();
+  initialDate.setHours( initialDate.getHours() + 1 );
 
   const [date, setDate] = useState(initialDate);
 

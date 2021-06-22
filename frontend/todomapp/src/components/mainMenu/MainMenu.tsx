@@ -67,7 +67,7 @@ const MainMenu = (props: IMainMenu) => {
             <DrawerBody p="1">
               <Flex justify="space-between">
                 <Flex direction="column" maxWidth="50%">
-                  <Heading textAlign="center">Places</Heading>
+                  <Heading m="5" textAlign="center">Places</Heading>
                   <Flex
                     overflowY="scroll"
                     overflowX="hidden"
@@ -84,7 +84,7 @@ const MainMenu = (props: IMainMenu) => {
                   </Flex>
                 </Flex>
                 <Flex direction="column" flexBasis="50%">
-                  <Heading textAlign="center">Tasks</Heading>
+                  <Heading m="5" textAlign="center">Tasks</Heading>
                   <Flex
                     overflowY="scroll"
                     overflowX="hidden"

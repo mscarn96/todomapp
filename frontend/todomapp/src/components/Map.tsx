@@ -4,7 +4,7 @@ import { Box, Center } from "@chakra-ui/layout";
 
 import { useContextState } from "../context/Store";
 import mapDatatoGoogleMaps from "../utils/mapDatatoGoogleMap";
-// import geocodeLatLng from "../utils/geocoder";
+import geocodeLatLng from "../utils/geocoder";
 
 import { showErrorToast } from "../utils/toast";
 
@@ -41,7 +41,7 @@ const Map = (props: IMap) => {
 
   const [openedPlace, setOpenedPlace] = useState<Place>();
 
-  // const geocoder = useCallback(() => new google.maps.Geocoder(), []);
+   const geocoder = useCallback(() => new google.maps.Geocoder(), []);
 
   const initMap = (zoomLevel: number, address: GoogleLatLng): void => {
     if (mapRef.current) {
@@ -125,9 +125,9 @@ const Map = (props: IMap) => {
         setSelectedLatLng([lat, lng]);
       }
 
-      // geocodeLatLng(geocoder(), newMarker?.getPosition(), setSelectedAddress);
+       geocodeLatLng(geocoder(), newMarker?.getPosition(), setSelectedAddress);
     },
-    [selectedMarker]
+    [selectedMarker,geocoder]
   );
 
   useEffect(startMap, [startMap]);
