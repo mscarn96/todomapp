@@ -43,7 +43,7 @@ app.use(limiter);
 
 app.use(hpp());
 
-app.use(cors({ origin: process.env.CLIENT_URL }));
+app.use(cors({ origin: "*" }));
 
 const PORT = process.env.PORT || 5000;
 
