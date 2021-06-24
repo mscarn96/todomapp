@@ -12,9 +12,9 @@
 
 If you don't want to create account, login with this credentials:
 
-test@test.com
+Email : 'test@test.com'
 
-test123
+Pasword: 'test123'
 
 
 [API Documentation](https://documenter.getpostman.com/view/13930534/Tzedf3iQ)
