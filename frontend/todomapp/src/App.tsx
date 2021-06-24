@@ -26,6 +26,8 @@ function App() {
   const dispatch = useContextDispatch();
   const user = useContextState().user;
 
+  useEffect(() => console.log("mounted"), []);
+
   useEffect(() => {
     const googleMapsScript = loadMapApi();
     googleMapsScript.addEventListener("load", function () {
@@ -49,7 +51,7 @@ function App() {
 
   return (
     <Application theme={customTheme}>
-      <Box className="App" w="100%" h="100%" overflow="hidden">
+      <Box className='App' w='100%' h='100%' overflow='hidden'>
         {isLoggedIn ? (
           <Main scriptLoaded={scriptLoaded} />
         ) : (
