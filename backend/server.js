@@ -45,6 +45,11 @@ app.use(hpp());
 
 app.use(cors({ origin: "*" }));
 
+app.use(function (req, res, next) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  next();
+});
+
 const PORT = process.env.PORT || 5000;
 
 if (process.env.NODE_ENV === "development") {
