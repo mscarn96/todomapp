@@ -12,7 +12,6 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const errorHandler = require("./middleware/error");
 const connectDB = require("./config/db");
-const addHeaders = require("./utils/addHeaders");
 
 const places = require("./routes/places");
 const tasks = require("./routes/tasks");
@@ -44,9 +43,7 @@ app.use(limiter);
 
 app.use(hpp());
 
-app.use(cors());
-
-app.use(addHeaders());
+app.use(cors({ origin: process.env.CLIENT_URL }));
 
 const PORT = process.env.PORT || 5000;
 
