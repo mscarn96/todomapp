@@ -2,9 +2,9 @@
 
 > Todo Application integrated with Google Maps.
 
-![]1.png
-![]2.png
-![]3.png
+![]1.PNG
+![]2.PNG
+![]3.PNG
 
 ## Live
 
